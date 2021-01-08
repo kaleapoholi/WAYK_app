@@ -24,4 +24,4 @@ class LesionDataService {
     
 }
     
-export default new GADataService();
+export default new LesionDataService();

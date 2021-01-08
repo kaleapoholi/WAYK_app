@@ -14,6 +14,7 @@ import BoardModerator from "./components/board-moderator.component";
 import BoardAdmin from "./components/board-admin.component";
 import ExamList from "./components/exams-list.component";
 import GAForm from "./components/genassmt.component";
+import Lesion from "./components/lesion.component";
 
 class App extends Component {
   constructor(props) {
@@ -133,6 +134,7 @@ class App extends Component {
             <Route path="/admin" component={BoardAdmin} />
             <Route path="/exams" component={ExamList} />
             <Route path="/GA" component={GAForm} />
+            <Route path="/addlesion" component={Lesion} />
           </Switch>
         </div>
       </div>

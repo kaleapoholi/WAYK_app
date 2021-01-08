@@ -4,6 +4,7 @@ import { Switch, Route, Link } from "react-router-dom";
 import Styles from '../styles/Styles';
 import GADataService from "../services/genassmt.service";
 import Profile from "./profile.component";
+import Lesion from "./lesion.component";
 
 export default class GAForm extends Component {
   constructor(props) {
@@ -109,7 +110,7 @@ export default class GAForm extends Component {
 
   render() {
 
-    const {retrieved, currentGA} = this.state;
+    const {retrieved, currentexamid, currentGA} = this.state;
 
     const Condition = ({ when, is, children }) => (
       <Field name={when} subscription={{ value: true }}>
@@ -145,6 +146,7 @@ export default class GAForm extends Component {
                 
               </label>{" "}
               {currentGA.generalstate}
+              
             </div>
             <div>
               <label>
@@ -152,6 +154,16 @@ export default class GAForm extends Component {
                 
               </label>{" "}
               {currentGA.bonestate}
+              {currentGA.bonestate!=="Normal" && (
+                <div className="buttons">
+                <Link to={{pathname:`/addlesion/${currentGA.id}`, state: {currentGAinfo : {examID: currentexamid, gaID: currentGA.id, structure : "bonestate"}} }} className="nav-link"> 
+                <button>
+                Add Lesion
+                    </button>
+                 </Link>
+    
+                </div>
+              )}
             </div>
             <div>
               <label>
@@ -159,6 +171,16 @@ export default class GAForm extends Component {
                 
               </label>{" "}
               {currentGA.cartstate}
+              {currentGA.cartstate!=="Normal" && (
+                <div className="buttons">
+                <Link to={{pathname:`/addlesion/${currentGA.id}`, state: {currentGAinfo : {examID: currentexamid, gaID: currentGA.id, structure : "cartstate"}} }} className="nav-link"> 
+                <button>
+                Add Lesion
+                    </button>
+                 </Link>
+    
+                </div>
+              )}
             </div>
             <div>
               <label>
@@ -166,6 +188,16 @@ export default class GAForm extends Component {
                 
               </label>{" "}
               {currentGA.menstate}
+              {currentGA.menstate!=="Normal" && (
+                <div className="buttons">
+                <Link to={{pathname:`/addlesion/${currentGA.id}`, state: {currentGAinfo : {examID: currentexamid, gaID: currentGA.id, structure : "menstate"}} }} className="nav-link"> 
+                <button>
+                Add Lesion
+                    </button>
+                 </Link>
+    
+                </div>
+              )}
             </div>
             <div>
               <label>               
@@ -173,6 +205,16 @@ export default class GAForm extends Component {
                 
               </label>{" "}
               {currentGA.ligstate}
+              {currentGA.ligstate!=="Normal" && (
+                <div className="buttons">
+                <Link to={{pathname:`/addlesion/${currentGA.id}`, state: {currentGAinfo : {examID: currentexamid, gaID: currentGA.id, structure : "ligstate"}} }} className="nav-link"> 
+                <button>
+                Add Lesion
+                    </button>
+                 </Link>
+    
+                </div>
+              )}
             </div>   
             
 
@@ -361,6 +403,7 @@ export default class GAForm extends Component {
       <div className="container mt-3">
           <Switch>
             <Route path={'/profile'} component={Profile} />
+            <Route path={`/addlesion/${currentGA.id}`} component={Lesion}/>
           </Switch>
         </div>
       </div>
