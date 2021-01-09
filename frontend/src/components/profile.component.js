@@ -18,28 +18,28 @@ export default class Profile extends Component {
 
     this.state = {
       currentUser: AuthService.getCurrentUser(),
-      exams:[],
-      users:[],
+      exams: [],
+      users: [],
       currentExam: {
         id: null,
-        dirname : "",
-        state : "",
+        dirname: "",
+        state: "",
         userId: null
       },
       currentIndex: -1,
-      showAdminContent:false, 
-      showUserContent:false
+      showAdminContent: false,
+      showUserContent: false
     };
   }
 
   componentDidMount() {
-    const user=this.state.currentUser;
+    const user = this.state.currentUser;
     this.retrieveExams();
     this.retrieveUsers();
     if (user) {
       this.setState({
-        showAdminContent : user.roles.includes("ROLE_ADMIN"),
-        showUserContent : user.roles.includes("ROLE_USER")
+        showAdminContent: user.roles.includes("ROLE_ADMIN"),
+        showUserContent: user.roles.includes("ROLE_USER")
       })
     }
   }
@@ -47,7 +47,7 @@ export default class Profile extends Component {
   onChangeAnnotUser(e) {
     const userId = e.target.value;
 
-    this.setState(function(prevState) {
+    this.setState(function (prevState) {
       return {
         currentExam: {
           ...prevState.currentExam,
@@ -60,11 +60,11 @@ export default class Profile extends Component {
   onChangeExamState(e) {
     const state = e.target.value;
 
-    this.setState(function(prevState) {
+    this.setState(function (prevState) {
       return {
         currentExam: {
           ...prevState.currentExam,
-          state : state
+          state: state
         }
       };
     });
@@ -87,7 +87,7 @@ export default class Profile extends Component {
     ExamDataService.findAllUser()
       .then(response => {
         this.setState({
-          
+
           users: response.data[0].users
         });
         console.log(response.data[0].users);
@@ -117,8 +117,8 @@ export default class Profile extends Component {
   updateUser(userId) {
     var data = {
       id: this.state.currentExam.id,
-      dirname : this.state.currentExam.dirname,
-      state : this.state.currentExam.state,
+      dirname: this.state.currentExam.dirname,
+      state: this.state.currentExam.state,
       userId: userId
     };
 
@@ -136,15 +136,15 @@ export default class Profile extends Component {
       .catch(e => {
         console.log(e);
       });
-      
-      
+
+
   }
 
   updateState(state) {
     var data = {
       id: this.state.currentExam.id,
-      dirname : this.state.currentExam.dirname,
-      state : state,
+      dirname: this.state.currentExam.dirname,
+      state: state,
       userId: this.state.currentExam.userId
     };
 
@@ -162,14 +162,14 @@ export default class Profile extends Component {
       .catch(e => {
         console.log(e);
       });
-      
-      
+
+
   }
 
 
 
   render() {
-    const { currentUser , exams, users, currentExam, currentIndex, showAdminContent, showUserContent} = this.state;
+    const { currentUser, exams, users, currentExam, currentIndex, showAdminContent, showUserContent } = this.state;
 
     return (
       <div className="container">
@@ -181,104 +181,104 @@ export default class Profile extends Component {
         </header>
 
         <div className="list row">
-        
-        <div className="col-md-6">
-          <h4>Exams List</h4>
 
-          <ul className="list-group">
-            {exams &&
-              exams.map((exam, index) => (
-                <li
-                  className={
-                    "list-group-item " +
-                    (index === currentIndex ? "active" : "")
-                  }
-                  onClick={() => this.setActiveExam(exam, index)}
-                  key={index}
-                >
-                  {exam.dirname}
-                </li>
-              ))}
-          </ul>
+          <div className="col-md-6">
+            <h4>Exams List</h4>
 
-        </div>
-        <div className="col-md-6">
-          {currentExam !=null ? (
-            <div>
-              <h4>Exam</h4>
-              <div>
-                <label>
-                  <strong>Dirname:</strong>
-                </label>{" "}
-                {currentExam.dirname}
-              </div>
-              <div>
-                <label>
-                  <strong>State:</strong>
-                </label>{" "}
-                {currentExam.state}
-              </div>
-              <div>
-              {showUserContent && (
-                <label>
-                  <Link to={{pathname: `/GA/${currentExam.id}`, state: {examID : currentExam.id} }} className="nav-link">
-                    {currentExam.state === "NEW" ? (
-                      <button classename="badge badge-primary mr-2" 
-                        onClick={()=>this.updateState("EN COURS DE LECTURE")}>
-                          createGA
-                      </button>
-                    ):(
-                      <button classename="badge badge-primary mr-2" >
-                          readGA
-                      </button>
-                    )
+            <ul className="list-group">
+              {exams &&
+                exams.map((exam, index) => (
+                  <li
+                    className={
+                      "list-group-item " +
+                      (index === currentIndex ? "active" : "")
                     }
-                    
-                  </Link>
-                  
-                </label>
+                    onClick={() => this.setActiveExam(exam, index)}
+                    key={index}
+                  >
+                    {exam.dirname}
+                  </li>
+                ))}
+            </ul>
 
-                
-              )}
-                
+          </div>
+          <div className="col-md-6">
+            {currentExam != null ? (
+              <div>
+                <h4>Exam</h4>
+                <div>
+                  <label>
+                    <strong>Dirname:</strong>
+                  </label>{" "}
+                  {currentExam.dirname}
+                </div>
+                <div>
+                  <label>
+                    <strong>State:</strong>
+                  </label>{" "}
+                  {currentExam.state}
+                </div>
+                <div>
+                  {showUserContent && (
+                    <label>
+                      <Link to={{ pathname: `/GA/${currentExam.id}`, state: { examID: currentExam.id } }} className="nav-link">
+                        {currentExam.state === "NEW" ? (
+                          <button classename="badge badge-primary mr-2"
+                            onClick={() => this.updateState("EN COURS DE LECTURE")}>
+                            createGA
+                          </button>
+                        ) : (
+                            <button classename="badge badge-primary mr-2" >
+                              readGA
+                            </button>
+                          )
+                        }
+
+                      </Link>
+
+                    </label>
+
+
+                  )}
+
+                </div>
+
+                {showAdminContent && (
+                  <label>
+                    Choisir le radiologue :
+                    {users.map((user) => (
+                      <button classeName="badge badge-primary mr-2"
+                        onClick={() => this.updateUser(user.user_roles.userId)}>{user.username}</button>
+                    ))}
+
+                  </label>
+
+
+
+                )}
+
+                <div className="container mt-3">
+                  <Switch>
+                    <Route path={`/GA/${currentExam.id}`} component={GAForm} />
+                  </Switch>
+                </div>
+
               </div>
 
-              {showAdminContent && (
-                <label>
-                      Choisir le radiologue :
-                      {users.map((user)=>  (
-                          <button classeName="badge badge-primary mr-2"
-                          onClick={()=>this.updateUser(user.user_roles.userId)}>{user.username}</button>
-                        ))}         
-                      
-                </label>
 
-                
-              
-              )}  
-
-        <div className="container mt-3">
-          <Switch>
-            <Route path={`/GA/${currentExam.id}`} component={GAForm} />
-          </Switch>
+            ) : (
+                <div>
+                  <br />
+                  <p>Please click on a Exam...</p>
+                </div>
+              )}
+          </div>
         </div>
-          
-            </div>
 
-            
-          ) : (
-            <div>
-              <br />
-              <p>Please click on a Exam...</p>
-            </div>
-          )}
-        </div>
+
+
       </div>
-      
 
-      
-    </div>
-        
     );
   }
 }

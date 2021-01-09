@@ -22,19 +22,19 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING
         },
         localisation:{
-            type: Sequelize.STRING,
+            type: Sequelize.STRING
         },
         region:{
-            type: Sequelize.STRING,
+            type: Sequelize.STRING
         },
         position:{
-            type: Sequelize.STRING,
+            type: Sequelize.STRING
         },
         comment:{
             type: Sequelize.STRING
         },
         label:{
-            type: Sequelize.STRING,
+            type: Sequelize.STRING
         },
         description:{
             type: Sequelize.STRING

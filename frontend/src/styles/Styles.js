@@ -59,7 +59,7 @@ export default styled.div`
   }
 
   p {
-    max-width: 500px;
+    max-width: 100px;
     margin: 10px auto;
     & > a {
       display: inline;
@@ -76,7 +76,7 @@ export default styled.div`
   form,
   div.form {
     text-align: left;
-    max-width: 500px;
+    max-width: 1000px;
     margin: 10px auto;
     border: 1px solid #ccc;
     padding: 20px;
@@ -92,7 +92,7 @@ export default styled.div`
       position: relative;
       & > label {
         color: #333;
-        width: 200px;
+        width: 800px;
         min-width: 60px;
         font-size: 1em;
         line-height: 32px;

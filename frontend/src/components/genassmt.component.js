@@ -3,6 +3,7 @@ import { Form, Field } from 'react-final-form';
 import { Switch, Route, Link } from "react-router-dom";
 import Styles from '../styles/Styles';
 import GADataService from "../services/genassmt.service";
+import LesionDataService from "../services/lesion.service";
 import Profile from "./profile.component";
 import Lesion from "./lesion.component";
 
@@ -11,10 +12,13 @@ export default class GAForm extends Component {
     super(props);
     this.saveGA = this.saveGA.bind(this);
     this.retrieveGA = this.retrieveGA.bind(this);
+    this.retrieveLesionByGAid = this.retrieveLesionByGAid.bind(this);
+    
 
     this.state = {
       currentexamid : this.props.location.state.examID,
       retrieved : false,
+      lesions : [],
       currentGA:{
         id : null,
         quality : "",
@@ -37,6 +41,18 @@ export default class GAForm extends Component {
     
   }
 
+  retrieveLesionByGAid() {
+    LesionDataService.findByGA(this.state.currentGA.id)
+      .then(response => {
+        this.setState({
+          lesions: response.data
+        });
+        console.log(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }
 
   retrieveGA() {
     GADataService.findGAbyExamID(this.state.currentexamid)
@@ -62,6 +78,10 @@ export default class GAForm extends Component {
               examID : response.data[0].examID
             }
           });
+          this.retrieveLesionByGAid(this.state.currentGA.id);
+          console.log(this.state.lesions);
+      
+          
         };
       })
       .catch(e => {
@@ -110,7 +130,7 @@ export default class GAForm extends Component {
 
   render() {
 
-    const {retrieved, currentexamid, currentGA} = this.state;
+    const {retrieved, lesions, currentexamid, currentGA} = this.state;
 
     const Condition = ({ when, is, children }) => (
       <Field name={when} subscription={{ value: true }}>
@@ -217,7 +237,9 @@ export default class GAForm extends Component {
               )}
             </div>   
             
-
+            <div>
+            <pre>{JSON.stringify(lesions, 0, 2)}</pre>
+            </div>
             
             <div className="buttons">
             <Link to={"/profile"} className="nav-link"> 
