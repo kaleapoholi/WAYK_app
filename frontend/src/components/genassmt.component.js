@@ -1,9 +1,13 @@
 import React, { Component } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Table } from 'reactstrap';
+
 import { Form, Field } from 'react-final-form';
 import { Switch, Route, Link } from "react-router-dom";
 import Styles from '../styles/Styles';
 import GADataService from "../services/genassmt.service";
 import LesionDataService from "../services/lesion.service";
+import ExamDataService from "../services/exam.service";
 import Profile from "./profile.component";
 import Lesion from "./lesion.component";
 
@@ -13,32 +17,50 @@ export default class GAForm extends Component {
     this.saveGA = this.saveGA.bind(this);
     this.retrieveGA = this.retrieveGA.bind(this);
     this.retrieveLesionByGAid = this.retrieveLesionByGAid.bind(this);
-    
+    this.retrieveStateExam = this.retrieveStateExam.bind(this);
+
 
     this.state = {
-      currentexamid : this.props.location.state.examID,
-      retrieved : false,
-      lesions : [],
-      currentGA:{
-        id : null,
-        quality : "",
-        generalstate : "",
-        bonestate : "Normal",
-        cartstate : "Normal",
-        menstate : "Normal",
-        ligstate : "Normal",
-        state : false,
-        examID : null,
+      currentexamid: this.props.location.state.examID,
+      currentexamstate: "",
+      retrieved: false,
+      lesions: [],
+      currentGA: {
+        id: null,
+        quality: "",
+        generalstate: "",
+        bonestate: "Normal",
+        cartstate: "Normal",
+        menstate: "Normal",
+        ligstate: "Normal",
+        state: false,
+        examID: null,
 
       }
-        
+
     };
   }
 
   componentDidMount() {
     console.log(this.state);
     this.retrieveGA();
-    
+    this.retrieveStateExam();
+
+  }
+
+  retrieveStateExam() {
+    ExamDataService.findOne(this.props.location.state.examID)
+      .then(response => {
+        this.setState({
+          currentexamstate: response.data.state
+        });
+        console.log(response.data.state);
+
+      })
+      .catch(e => {
+        console.log(e);
+      });
+
   }
 
   retrieveLesionByGAid() {
@@ -57,31 +79,31 @@ export default class GAForm extends Component {
   retrieveGA() {
     GADataService.findGAbyExamID(this.state.currentexamid)
       .then(response => {
-        if (response.data[0] !== undefined){
+        if (response.data[0] !== undefined) {
           this.setState({
             retrieved: true
           });
 
         };
         console.log(this.state.retrieved);
-        if (this.state.retrieved ===true){
+        if (this.state.retrieved === true) {
           this.setState({
             currentGA: {
-              id : response.data[0].id,
-              quality : response.data[0].quality,
-              generalstate : response.data[0].generalstate,
-              bonestate : response.data[0].bonestate,
-              cartstate : response.data[0].cartstate,
-              menstate : response.data[0].menstate,
-              ligstate : response.data[0].ligstate,
-              state : response.data[0].state,
-              examID : response.data[0].examID
+              id: response.data[0].id,
+              quality: response.data[0].quality,
+              generalstate: response.data[0].generalstate,
+              bonestate: response.data[0].bonestate,
+              cartstate: response.data[0].cartstate,
+              menstate: response.data[0].menstate,
+              ligstate: response.data[0].ligstate,
+              state: response.data[0].state,
+              examID: response.data[0].examID
             }
           });
           this.retrieveLesionByGAid(this.state.currentGA.id);
           console.log(this.state.lesions);
-      
-          
+
+
         };
       })
       .catch(e => {
@@ -89,48 +111,48 @@ export default class GAForm extends Component {
       });
   }
 
-  saveGA(values){
-      var data = {
-        quality : values.quality,
-        generalstate : values.generalstate,
-        bonestate : values.bonestate,
-        cartstate : values.cartstate,
-        menstate : values.menstate,
-        ligstate : values.ligstate,
-        state : true,
-        examID : this.props.location.state.examID
-      }
+  saveGA(values) {
+    var data = {
+      quality: values.quality,
+      generalstate: values.generalstate,
+      bonestate: values.bonestate,
+      cartstate: values.cartstate,
+      menstate: values.menstate,
+      ligstate: values.ligstate,
+      state: true,
+      examID: this.props.location.state.examID
+    }
 
-      console.log("saving GA");
-      console.log(data);
+    console.log("saving GA");
+    console.log(data);
 
-      GADataService.create(data, this.props.location.state.examID)
+    GADataService.create(data, this.props.location.state.examID)
       .then(response => {
-          this.setState({
-            id : response.data.id,
-            quality : response.data.quality,
-            generalstate : response.data.generalstate,
-            bonestate : response.data.bonestate,
-            cartstate : response.data.cartstate,
-            menstate : response.data.menstate,
-            ligstate : response.data.ligstate,
-            state : true,
-            examID : response.data.examID,
-      
-            submitted : true
+        this.setState({
+          id: response.data.id,
+          quality: response.data.quality,
+          generalstate: response.data.generalstate,
+          bonestate: response.data.bonestate,
+          cartstate: response.data.cartstate,
+          menstate: response.data.menstate,
+          ligstate: response.data.ligstate,
+          state: true,
+          examID: response.data.examID,
 
-          });
-          console.log(response.data);
+          submitted: true
+
+        });
+        console.log(response.data);
       })
       .catch(e => {
-          console.log(e);
+        console.log(e);
       });
   }
- 
+
 
   render() {
 
-    const {retrieved, lesions, currentexamid, currentGA} = this.state;
+    const { retrieved, lesions, currentexamid, currentexamstate, currentGA } = this.state;
 
     const Condition = ({ when, is, children }) => (
       <Field name={when} subscription={{ value: true }}>
@@ -141,304 +163,354 @@ export default class GAForm extends Component {
     const onSubmit = values => {
       window.alert(JSON.stringify(values, 0, 2));
       this.saveGA(values);
-      window.location='/profile';
+      window.location = '/profile';
     }
 
     return (
       <Styles>
-      <div className="container">
-        
-        {retrieved===true ? (
+        <div className="container">
+
+          {retrieved === true ? (
             <div>
 
-              <h4>General Assessment</h4>
-            
-            <div>
-              <label>
-                <strong>quality :</strong>
-                
-              </label>{" "}
-              {currentGA.quality}
-            </div>
-            <div>
-              <label>
-              <strong>generalstate :</strong>
-                
-              </label>{" "}
-              {currentGA.generalstate}
-              
-            </div>
-            <div>
-              <label>
-              <strong>bonestate :</strong>
-                
-              </label>{" "}
-              {currentGA.bonestate}
-              {currentGA.bonestate!=="Normal" && (
-                <div className="buttons">
-                <Link to={{pathname:`/addlesion/${currentGA.id}`, state: {currentGAinfo : {examID: currentexamid, gaID: currentGA.id, structure : "bonestate"}} }} className="nav-link"> 
-                <button>
-                Add Lesion
-                    </button>
-                 </Link>
-    
-                </div>
-              )}
-            </div>
-            <div>
-              <label>
-              <strong>cartstate :</strong>
-                
-              </label>{" "}
-              {currentGA.cartstate}
-              {currentGA.cartstate!=="Normal" && (
-                <div className="buttons">
-                <Link to={{pathname:`/addlesion/${currentGA.id}`, state: {currentGAinfo : {examID: currentexamid, gaID: currentGA.id, structure : "cartstate"}} }} className="nav-link"> 
-                <button>
-                Add Lesion
-                    </button>
-                 </Link>
-    
-                </div>
-              )}
-            </div>
-            <div>
-              <label>
-              <strong>menstate :</strong>
-                
-              </label>{" "}
-              {currentGA.menstate}
-              {currentGA.menstate!=="Normal" && (
-                <div className="buttons">
-                <Link to={{pathname:`/addlesion/${currentGA.id}`, state: {currentGAinfo : {examID: currentexamid, gaID: currentGA.id, structure : "menstate"}} }} className="nav-link"> 
-                <button>
-                Add Lesion
-                    </button>
-                 </Link>
-    
-                </div>
-              )}
-            </div>
-            <div>
-              <label>               
-                <strong>ligstate :</strong>
-                
-              </label>{" "}
-              {currentGA.ligstate}
-              {currentGA.ligstate!=="Normal" && (
-                <div className="buttons">
-                <Link to={{pathname:`/addlesion/${currentGA.id}`, state: {currentGAinfo : {examID: currentexamid, gaID: currentGA.id, structure : "ligstate"}} }} className="nav-link"> 
-                <button>
-                Add Lesion
-                    </button>
-                 </Link>
-    
-                </div>
-              )}
-            </div>   
-            
-            <div>
-            <pre>{JSON.stringify(lesions, 0, 2)}</pre>
-            </div>
-            
-            <div className="buttons">
-            <Link to={"/profile"} className="nav-link"> 
-            <button>
-            Retour
-                </button>
-             </Link>
-
-            </div>
-            
-            </div>  
-
-
-
-        ):( 
-          
-          <Form
-          onSubmit={onSubmit}
-          initialValues={currentGA}
-          
-          >
-          {({ handleSubmit, form, submitting, values }) => (
-            <form onSubmit={handleSubmit}>
+              <h4>Informations générales de l'examen</h4>
 
               <div>
-                <label>Quality</label>
-                <div>
-                  <label>
-                    <Field
-                      name="quality"
-                      component="input"
-                      type="radio"
-                      value="Normal"
-                    />{' '}
+                <label>
+                  <strong>Qualité :</strong>
+
+                </label>{" "}
+                {currentGA.quality}
+              </div>
+              <div>
+                <label>
+                  <strong>État général :</strong>
+
+                </label>{" "}
+                {currentGA.generalstate}
+
+              </div>
+              <div>
+                <label>
+                  <strong>État des structures osseuses :</strong>
+
+                </label>{" "}
+                {currentGA.bonestate}
+                {currentGA.bonestate !== "Normal" && currentexamstate !== "LU" && (
+                  <div className="buttons">
+                    <Link to={{ pathname: `/addlesion/${currentGA.id}`, state: { currentGAinfo: { examID: currentexamid, gaID: currentGA.id, structure: "bonestate" } } }} className="nav-link">
+                      <button>
+                        Ajouter une lésion
+                    </button>
+                    </Link>
+
+                  </div>
+                )}
+              </div>
+              <div>
+                <label>
+                  <strong>État des structures cartilagineuses :</strong>
+
+                </label>{" "}
+                {currentGA.cartstate}
+                {currentGA.cartstate !== "Normal" && currentexamstate !== "LU" && (
+                  <div className="buttons">
+                    <Link to={{ pathname: `/addlesion/${currentGA.id}`, state: { currentGAinfo: { examID: currentexamid, gaID: currentGA.id, structure: "cartstate" } } }} className="nav-link">
+                      <button>
+                        Ajouter une lésion
+                    </button>
+                    </Link>
+
+                  </div>
+                )}
+              </div>
+              <div>
+                <label>
+                  <strong>État des structures méniscales :</strong>
+
+                </label>{" "}
+                {currentGA.menstate}
+                {currentGA.menstate !== "Normal" && currentexamstate !== "LU" && (
+                  <div className="buttons">
+                    <Link to={{ pathname: `/addlesion/${currentGA.id}`, state: { currentGAinfo: { examID: currentexamid, gaID: currentGA.id, structure: "menstate" } } }} className="nav-link">
+                      <button>
+                        Ajouter une lésion
+                    </button>
+                    </Link>
+
+                  </div>
+                )}
+              </div>
+              <div>
+                <label>
+                  <strong>État des structures ligamentaires :</strong>
+
+                </label>{" "}
+                {currentGA.ligstate}
+                {currentGA.ligstate !== "Normal" && currentexamstate !== "LU" && (
+                  <div className="buttons">
+                    <Link to={{ pathname: `/addlesion/${currentGA.id}`, state: { currentGAinfo: { examID: currentexamid, gaID: currentGA.id, structure: "ligstate" } } }} className="nav-link">
+                      <button>
+                        Ajouter une lésion
+                    </button>
+                    </Link>
+
+                  </div>
+                )}
+              </div>
+
+
+              <div className="list row">
+                <div className="col-md-6">
+
+
+                  <h4>Liste de lésions</h4>
+
+                  <ul className="list-group">
+                  <Table striped bordered hover variant="dark">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Structure</th>
+                        <th>Type</th>
+                        <th>Label</th>
+                        <th>Localisation</th>
+                        <th>Région</th>
+                        <th>Position</th>
+                        <th>Visibilité coupe axiale</th>
+                        <th>Visibilité coupe sagittale</th>
+                        <th>Visibilité coupe coronale</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {lesions &&
+                      lesions.map((lesion) => (
+                        <tr>
+                        <th scope="row">{lesion.id}</th>
+                        <td>{lesion.structure}</td>
+                        <td>{lesion.type}</td>
+                        <td>{lesion.label}</td>
+                        <td>{lesion.localisation}</td>
+                        <td>{lesion.region}</td>
+                        <td>{lesion.position}</td>
+                        <td>{lesion.axialvis}</td>
+                        <td>{lesion.sagittalvis}</td>
+                        <td>{lesion.coronalvis}</td>
+                        
+                      </tr>
+                       
+
+                      ))}
+                      
+                      
+                    </tbody>
+                  </Table>
+                    
+                  </ul>
+
+                  
+
+                </div>
+              </div>
+
+              <div className="buttons">
+                <Link to={"/profile"} className="nav-link">
+                  <button>
+                    Retour
+                </button>
+                </Link>
+
+              </div>
+
+            </div>
+
+
+
+          ) : (
+
+              <Form
+                onSubmit={onSubmit}
+                initialValues={currentGA}
+
+              >
+                {({ handleSubmit, form, submitting, values }) => (
+                  <form onSubmit={handleSubmit}>
+
+                    <div>
+                      <label>Qualité</label>
+                      <div>
+                        <label>
+                          <Field
+                            name="quality"
+                            component="input"
+                            type="radio"
+                            value="Normal"
+                          />{' '}
                     Normal
                   </label>
-                  <label>
-                    <Field
-                      name="quality"
-                      component="input"
-                      type="radio"
-                      value="Artefact"
-                    />{' '}
+                        <label>
+                          <Field
+                            name="quality"
+                            component="input"
+                            type="radio"
+                            value="Artefact"
+                          />{' '}
                     Artefact
                   </label>
-                </div>
-              </div>
+                      </div>
+                    </div>
 
-              <div>
-                <label>GenState</label>
-                <div>
-                  <label>
-                    <Field
-                      name="generalstate"
-                      component="input"
-                      type="radio"
-                      value="Normal"
-                    />{' '}
+                    <div>
+                      <label>État général</label>
+                      <div>
+                        <label>
+                          <Field
+                            name="generalstate"
+                            component="input"
+                            type="radio"
+                            value="Normal"
+                          />{' '}
                     Normal
                   </label>
-                  <label>
-                    <Field
-                      name="generalstate"
-                      component="input"
-                      type="radio"
-                      value="Pathologique"
-                    />{' '}
+                        <label>
+                          <Field
+                            name="generalstate"
+                            component="input"
+                            type="radio"
+                            value="Pathologique"
+                          />{' '}
                     Pathologique
                   </label>
-                </div>
-              </div>
-              <Condition when="generalstate" is="Pathologique">
-              <label>LigState</label>
-                <div>
-                <label>
-                    <Field
-                      name="ligstate"
-                      component="input"
-                      type="radio"
-                      value="Normal"
-                    />{' '}
+                      </div>
+                    </div>
+                    <Condition when="generalstate" is="Pathologique">
+                      <label>État des structures ligamentaires</label>
+                      <div>
+                        <label>
+                          <Field
+                            name="ligstate"
+                            component="input"
+                            type="radio"
+                            value="Normal"
+                          />{' '}
                     Normal
                   </label>
-                  <label>
-                    <Field
-                      name="ligstate"
-                      component="input"
-                      type="radio"
-                      value="Pathologique"
-                    />{' '}
+                        <label>
+                          <Field
+                            name="ligstate"
+                            component="input"
+                            type="radio"
+                            value="Pathologique"
+                          />{' '}
                     Pathologique
                   </label>
-                </div>
+                      </div>
 
-                <label>BoneState</label>
-                <div>
-                <label>
-                    <Field
-                      name="bonestate"
-                      component="input"
-                      type="radio"
-                      value="Normal"
-                    />{' '}
+                      <label>État des structures osseuses</label>
+                      <div>
+                        <label>
+                          <Field
+                            name="bonestate"
+                            component="input"
+                            type="radio"
+                            value="Normal"
+                          />{' '}
                     Normal
                   </label>
-                  <label>
-                    <Field
-                      name="bonestate"
-                      component="input"
-                      type="radio"
-                      value="Pathologique"
-                    />{' '}
+                        <label>
+                          <Field
+                            name="bonestate"
+                            component="input"
+                            type="radio"
+                            value="Pathologique"
+                          />{' '}
                     Pathologique
                   </label>
-                </div>
+                      </div>
 
-                <label>CartState</label>
-                <div>
-                <label>
-                    <Field
-                      name="cartstate"
-                      component="input"
-                      type="radio"
-                      value="Normal"
-                    />{' '}
+                      <label>État des structures cartilagineuses</label>
+                      <div>
+                        <label>
+                          <Field
+                            name="cartstate"
+                            component="input"
+                            type="radio"
+                            value="Normal"
+                          />{' '}
                     Normal
                   </label>
-                  <label>
-                    <Field
-                      name="cartstate"
-                      component="input"
-                      type="radio"
-                      value="Pathologique"
-                    />{' '}
+                        <label>
+                          <Field
+                            name="cartstate"
+                            component="input"
+                            type="radio"
+                            value="Pathologique"
+                          />{' '}
                     Pathologique
                   </label>
-                </div>
+                      </div>
 
-                <label>MenState</label>
-                <div>
-                <label>
-                    <Field
-                      name="menstate"
-                      component="input"
-                      type="radio"
-                      value="Normal"
-                    />{' '}
+                      <label>État des structures méniscales</label>
+                      <div>
+                        <label>
+                          <Field
+                            name="menstate"
+                            component="input"
+                            type="radio"
+                            value="Normal"
+                          />{' '}
                     Normal
                   </label>
-                  <label>
-                    <Field
-                      name="menstate"
-                      component="input"
-                      type="radio"
-                      value="Pathologique"
-                    />{' '}
+                        <label>
+                          <Field
+                            name="menstate"
+                            component="input"
+                            type="radio"
+                            value="Pathologique"
+                          />{' '}
                     Pathologique
                   </label>
-                </div>
-              </Condition>
-              
-              <div className="buttons">
-                
-                <button type="submit" disabled={submitting}>
-                  Submit
+                      </div>
+                    </Condition>
+
+                    <div className="buttons">
+
+                      <button type="submit" disabled={submitting}>
+                        Soumettre
                 </button>
 
-                
-              </div>
-              <pre>{JSON.stringify(values, 0, 2)}</pre>
-            </form>
-          )}
-          </Form>
-        
-        
-            
-        )}
 
-      <div>
-    
-      </div>
+                    </div>
+                    <pre>{JSON.stringify(values, 0, 2)}</pre>
+                  </form>
+                )}
+              </Form>
 
-      <div className="container mt-3">
-          <Switch>
-            <Route path={'/profile'} component={Profile} />
-            <Route path={`/addlesion/${currentGA.id}`} component={Lesion}/>
-          </Switch>
+
+
+            )}
+
+          <div>
+
+          </div>
+
+          <div className="container mt-3">
+            <Switch>
+              <Route path={'/profile'} component={Profile} />
+              <Route path={`/addlesion/${currentGA.id}`} component={Lesion} />
+            </Switch>
+          </div>
         </div>
-      </div>
       </Styles>
     )
-          }
+  }
 
-         
 
-  
 
-      
-      
+
+
+
+
 
 
 }

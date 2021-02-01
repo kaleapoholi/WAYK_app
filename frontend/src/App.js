@@ -15,6 +15,7 @@ import BoardAdmin from "./components/board-admin.component";
 import ExamList from "./components/exams-list.component";
 import GAForm from "./components/genassmt.component";
 import Lesion from "./components/lesion.component";
+import Visudb from "./components/visudb.component";
 
 class App extends Component {
   constructor(props) {
@@ -51,7 +52,7 @@ class App extends Component {
       <div>
         <nav className="navbar navbar-expand navbar-dark bg-dark">
           <Link to={"/"} className="navbar-brand">
-            WAYK : For radiologists who say Knee 
+            WAYK : For radiologists who say Knee
           </Link>
           <div className="navbar-nav mr-auto">
             <li className="nav-item">
@@ -77,17 +78,26 @@ class App extends Component {
                 <Link to={"/exams"} className="nav-link">
                   ExamList
                 </Link>
-                              
+
               </li>
-              
+
             )}
 
             {currentUser && (
-              <li className="nav-item">
-                <Link to={"/user"} className="nav-link">
-                  Guideline
+              <div>
+                <li className="nav-item">
+                  <Link to={"/user"} className="nav-link">
+                    Guideline
                 </Link>
-              </li>
+                </li>
+                <li className="nav-item">
+                  <Link to={"/visudb"} className="nav-link">
+                    Visualisation
+              </Link>
+                </li>
+
+              </div>
+
             )}
           </div>
 
@@ -99,7 +109,7 @@ class App extends Component {
                 </Link>
               </li>
 
-              
+
               <li className="nav-item">
                 <a href="/login" className="nav-link" onClick={this.logOut}>
                   LogOut
@@ -107,20 +117,20 @@ class App extends Component {
               </li>
             </div>
           ) : (
-            <div className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link to={"/login"} className="nav-link">
-                  Login
+              <div className="navbar-nav ml-auto">
+                <li className="nav-item">
+                  <Link to={"/login"} className="nav-link">
+                    Login
                 </Link>
-              </li>
+                </li>
 
-              <li className="nav-item">
-                <Link to={"/register"} className="nav-link">
-                  Sign Up
+                <li className="nav-item">
+                  <Link to={"/register"} className="nav-link">
+                    Sign Up
                 </Link>
-              </li>
-            </div>
-          )}
+                </li>
+              </div>
+            )}
         </nav>
 
         <div className="container mt-3">
@@ -135,6 +145,7 @@ class App extends Component {
             <Route path="/exams" component={ExamList} />
             <Route path="/GA" component={GAForm} />
             <Route path="/addlesion" component={Lesion} />
+            <Route path="/visudb" component={Visudb} />
           </Switch>
         </div>
       </div>

@@ -9,6 +9,8 @@ module.exports = app => {
     // find by userid
     router.get("/user/:userId", exams.findByUser);
 
+    //find by userid and state
+    router.get("/userAndState/:userId/:state", exams.findByUserAndState);
 
     // update an exam 
     router.put("/:id", exams.update);

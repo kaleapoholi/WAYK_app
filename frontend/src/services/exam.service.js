@@ -14,6 +14,10 @@ class ExamDataService {
         return http.get(`/exams/user/${userId}`)
     }
 
+    findByUserAndState(userId, state){
+        return http.get(`/exams/userAndState/${userId}/${state}`)
+    }
+
     findAll() {
         return http.get("/exams");
     }

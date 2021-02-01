@@ -94,6 +94,18 @@ exports.findByUser = (req, res) => {
     });
 };
 
+exports.findByUserAndState = (req, res) => {
+
+  Exam.findAll({where : {userId: req.params.userId, state : req.params.state}})
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Error retrieving Exam" 
+      });
+    });
+};
 
 exports.findByState = (req, res) => {
   //const state = req.params.state;

@@ -44,6 +44,8 @@ export default class Profile extends Component {
     }
   }
 
+  
+
   onChangeAnnotUser(e) {
     const userId = e.target.value;
 
@@ -183,7 +185,7 @@ export default class Profile extends Component {
         <div className="list row">
 
           <div className="col-md-6">
-            <h4>Exams List</h4>
+            <h4>Liste de travail</h4>
 
             <ul className="list-group">
               {exams &&
@@ -205,16 +207,16 @@ export default class Profile extends Component {
           <div className="col-md-6">
             {currentExam != null ? (
               <div>
-                <h4>Exam</h4>
+                <h4>Examen</h4>
                 <div>
                   <label>
-                    <strong>Dirname:</strong>
+                    <strong>Nom de l'examen:</strong>
                   </label>{" "}
                   {currentExam.dirname}
                 </div>
                 <div>
                   <label>
-                    <strong>State:</strong>
+                    <strong>Statut de l'examen:</strong>
                   </label>{" "}
                   {currentExam.state}
                 </div>
@@ -225,18 +227,32 @@ export default class Profile extends Component {
                         {currentExam.state === "NEW" ? (
                           <button classename="badge badge-primary mr-2"
                             onClick={() => this.updateState("EN COURS DE LECTURE")}>
-                            createGA
+                            Créer le formulaire
                           </button>
                         ) : (
                             <button classename="badge badge-primary mr-2" >
-                              readGA
+                              Lire le formulaire
                             </button>
                           )
                         }
 
                       </Link>
 
+
+
+                      {currentExam.state === "EN COURS DE LECTURE" && (
+                        <label>
+                          <button classename="badge badge-primary mr-2"
+                            onClick={() => this.updateState("LU")}>
+                            Terminer la saisie 
+                          </button>
+
+                        </label>
+                      ) }
+
                     </label>
+
+
 
 
                   )}
@@ -269,7 +285,7 @@ export default class Profile extends Component {
             ) : (
                 <div>
                   <br />
-                  <p>Please click on a Exam...</p>
+                  <p>Choisir un examen...</p>
                 </div>
               )}
           </div>
