@@ -17,6 +17,8 @@ exports.create = (req , res ) => {
       menstate : req.body.menstate,
       ligstate : req.body.ligstate,
       state: req.body.state ? req.body.state : false,
+      laterality : req.body.laterality,
+      effusion : req.body.effusion,
       examID : examID,
   };
   

@@ -34,6 +34,8 @@ export default class GAForm extends Component {
         menstate: "Normal",
         ligstate: "Normal",
         state: false,
+        laterality: "",
+        effusion: "Inexistant",
         examID: null,
 
       }
@@ -97,6 +99,8 @@ export default class GAForm extends Component {
               menstate: response.data[0].menstate,
               ligstate: response.data[0].ligstate,
               state: response.data[0].state,
+              laterality: response.data[0].laterality,
+              effusion: response.data[0].effusion,
               examID: response.data[0].examID
             }
           });
@@ -120,6 +124,8 @@ export default class GAForm extends Component {
       menstate: values.menstate,
       ligstate: values.ligstate,
       state: true,
+      laterality: values.laterality,
+      effusion: values.effusion,
       examID: this.props.location.state.examID
     }
 
@@ -137,6 +143,8 @@ export default class GAForm extends Component {
           menstate: response.data.menstate,
           ligstate: response.data.ligstate,
           state: true,
+          laterality: response.data.laterality,
+          effusion: response.data.effusion,
           examID: response.data.examID,
 
           submitted: true
@@ -182,6 +190,23 @@ export default class GAForm extends Component {
                 </label>{" "}
                 {currentGA.quality}
               </div>
+
+              <div>
+                <label>
+                  <strong>Latéralité :</strong>
+
+                </label>{" "}
+                {currentGA.laterality}
+              </div>
+
+              <div>
+                <label>
+                  <strong>Présence d'Épanchement :</strong>
+
+                </label>{" "}
+                {currentGA.effusion}
+              </div>
+
               <div>
                 <label>
                   <strong>État général :</strong>
@@ -267,48 +292,50 @@ export default class GAForm extends Component {
                   <h4>Liste de lésions</h4>
 
                   <ul className="list-group">
-                  <Table striped bordered hover variant="dark">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Structure</th>
-                        <th>Type</th>
-                        <th>Label</th>
-                        <th>Localisation</th>
-                        <th>Région</th>
-                        <th>Position</th>
-                        <th>Visibilité coupe axiale</th>
-                        <th>Visibilité coupe sagittale</th>
-                        <th>Visibilité coupe coronale</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                    {lesions &&
-                      lesions.map((lesion) => (
+                    <Table striped bordered hover variant="dark">
+                      <thead>
                         <tr>
-                        <th scope="row">{lesion.id}</th>
-                        <td>{lesion.structure}</td>
-                        <td>{lesion.type}</td>
-                        <td>{lesion.label}</td>
-                        <td>{lesion.localisation}</td>
-                        <td>{lesion.region}</td>
-                        <td>{lesion.position}</td>
-                        <td>{lesion.axialvis}</td>
-                        <td>{lesion.sagittalvis}</td>
-                        <td>{lesion.coronalvis}</td>
-                        
-                      </tr>
-                       
+                          <th>#</th>
+                          <th>Structure</th>
+                          <th>Type</th>
+                          <th>Label</th>
+                          <th>Label Brush</th>
+                          <th>Localisation</th>
+                          <th>Région</th>
+                          <th>Position</th>
+                          <th>Visibilité coupe axiale</th>
+                          <th>Visibilité coupe sagittale</th>
+                          <th>Visibilité coupe coronale</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {lesions &&
+                          lesions.map((lesion, index) => (
+                            <tr>
+                              <th scope="row">{lesion.id}</th>
+                              <td>{lesion.structure}</td>
+                              <td>{lesion.type}</td>
+                              <td>{lesion.label}</td>
+                              <td>{index + 1}</td>
+                              <td>{lesion.localisation}</td>
+                              <td>{lesion.region}</td>
+                              <td>{lesion.position}</td>
+                              <td>{lesion.axialvis}</td>
+                              <td>{lesion.sagittalvis}</td>
+                              <td>{lesion.coronalvis}</td>
 
-                      ))}
-                      
-                      
-                    </tbody>
-                  </Table>
-                    
+                            </tr>
+
+
+                          ))}
+
+
+                      </tbody>
+                    </Table>
+
                   </ul>
 
-                  
+
 
                 </div>
               </div>
@@ -359,6 +386,77 @@ export default class GAForm extends Component {
                   </label>
                       </div>
                     </div>
+
+                    <div>
+                      <label>Latéralité</label>
+                      <div>
+                        <label>
+                          <Field
+                            name="laterality"
+                            component="input"
+                            type="radio"
+                            value="Gauche"
+                          />{' '}
+                    Gauche
+                  </label>
+                        <label>
+                          <Field
+                            name="laterality"
+                            component="input"
+                            type="radio"
+                            value="Droite"
+                          />{' '}
+                    Droite
+                  </label>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label>Épanchement</label>
+                      <div>
+                        <label>
+                          <Field
+                            name="effusion"
+                            component="input"
+                            type="radio"
+                            value="Inexistant"
+                          />{' '}
+                        Inexistant
+                      </label>
+
+                        <label>
+                          <Field
+                            name="effusion"
+                            component="input"
+                            type="radio"
+                            value="Faible"
+                          />{' '}
+                        Faible
+                      </label>
+
+                        <label>
+                          <Field
+                            name="effusion"
+                            component="input"
+                            type="radio"
+                            value="Moyen"
+                          />{' '}
+                        Moyen
+                      </label>
+
+                        <label>
+                          <Field
+                            name="effusion"
+                            component="input"
+                            type="radio"
+                            value="Important"
+                          />{' '}
+                        Important
+                      </label>
+                      </div>
+                    </div>
+
+
 
                     <div>
                       <label>État général</label>

@@ -124,16 +124,18 @@ export default class LesionForm extends Component {
       //window.location=`/GA/${currentexamID}`;
     }
 
-    const bonetypes = { "Fissure": "OS_FIS", "Fracture": "OS_FRA", "Contusion": "OS_CON", "Tumeur": "OS_TUM", "Nécrose": "OS_NEC", "Dysplasie": "OS_DYS" };
+    const bonetypes = { "Fissure": "OS_FIS", "Fracture": "OS_FRA", "Contusion/ Œdème": "OS_CON", "Tumeur": "OS_TUM", "Nécrose": "OS_NEC", "Dysplasie": "OS_DYS" };
     const bonecartlocalisation = ["Tibia", "Fémur", "Patella", "Fibula"]
     const tibiaregion = ["Plateau", "Massif Epine Tibiale"];
     const tibiaposition = ["Insertion LCA", "Insertion LCP"];
-    const femurregion = ["Condyle Latéral", "Condyle Médial", "Trochlée"];
+    const femurregion = ["Condyle", "Trochlée"];
+    const patellaregion = ["Médial", "Latéral", "Crête"];
+
 
     const carttypes = { "Focal": "CA_FOC", "Diffus": "CA_DIF" };
     const cartcarac = ["Grade I à III", "Grade IV"];
-    const cartregionfem = ["Trochlée", "Condyle"];
-    const cartposition = ["Médial", "Latéral"];
+    //const cartregionfem = ["Trochlée", "Condyle"];
+    const position = ["Médial", "Latéral"];
 
     const ligtypes = { "Lésion": "Lesion", "Dégénératif": "LI_DEG", "Kyste": "LI_KYS" };
     const depth = ["Complète", "Partielle"];
@@ -427,6 +429,15 @@ export default class LesionForm extends Component {
                         </Field>
 
                       </Condition>
+                      <Condition when="region" is="Plateau">
+                        <Field name="position" component="select" type="radio">
+                          <option value="position">Position</option>
+                          {position.map((type) => (<option value={type}>{type}</option>))}
+
+                        </Field>
+
+                      </Condition>
+                      
                       <Condition when="localisation" is="Fémur">
                         <Field name="region" component="select" type="radio">
                           <option value="region">Région</option>
@@ -435,6 +446,23 @@ export default class LesionForm extends Component {
                         </Field>
 
                       </Condition>
+                      <Condition when="region" is="Condyle">
+                        <Field name="position" component="select" type="radio">
+                          <option value="position">Position</option>
+                          {position.map((type) => (<option value={type}>{type}</option>))}
+
+                        </Field>
+
+                      </Condition>
+                      <Condition when="localisation" is="Patella">
+                        <Field name="region" component="select" type="radio">
+                          <option value="region">Région</option>
+                          {patellaregion.map((type) => (<option value={type}>{type}</option>))}
+
+                        </Field>
+
+                      </Condition>
+
 
 
 
@@ -663,49 +691,56 @@ export default class LesionForm extends Component {
                           {bonecartlocalisation.map((type) => (<option value={type}>{type}</option>))}
                         </Field>
                       </label>
-                      <Condition when="localisation" is="Fémur">
-                        <Field name="region" component="select" type="radio">
-                          <option value="region">Région</option>
-                          {cartregionfem.map((type) => (<option value={type}>{type}</option>))}
-
-                        </Field>
-
-                        <Condition when="region" is="Trochlée">
-                          <Field name="position" component="select" type="radio">
-                            <option value="position">Position</option>
-                            {cartposition.map((type) => (<option value={type}>{type}</option>))}
-                            <option value={"Rainure"}>{"Rainure"}</option>
-
-                          </Field>
-
-
-                        </Condition>
-
-
-                      </Condition>
                       <Condition when="localisation" is="Tibia">
                         <Field name="region" component="select" type="radio">
                           <option value="region">Région</option>
-                          <option value={"Condyle"}>{"Condyle"}</option>
+                          {tibiaregion.map((type) => (<option value={type}>{type}</option>))}
+
+                        </Field>
+
+                      </Condition>
+                      <Condition when="region" is="Massif Epine Tibiale">
+                        <Field name="position" component="select" type="radio">
+                          <option value="position">Position</option>
+                          {tibiaposition.map((type) => (<option value={type}>{type}</option>))}
+
+                        </Field>
+
+                      </Condition>
+                      <Condition when="region" is="Plateau">
+                        <Field name="position" component="select" type="radio">
+                          <option value="position">Position</option>
+                          {position.map((type) => (<option value={type}>{type}</option>))}
+
+                        </Field>
+
+                      </Condition>
+                      
+                      <Condition when="localisation" is="Fémur">
+                        <Field name="region" component="select" type="radio">
+                          <option value="region">Région</option>
+                          {femurregion.map((type) => (<option value={type}>{type}</option>))}
+
+                        </Field>
+
+                      </Condition>
+                      <Condition when="region" is="Condyle">
+                        <Field name="position" component="select" type="radio">
+                          <option value="position">Position</option>
+                          {position.map((type) => (<option value={type}>{type}</option>))}
+
                         </Field>
 
                       </Condition>
                       <Condition when="localisation" is="Patella">
                         <Field name="region" component="select" type="radio">
                           <option value="region">Région</option>
-                          <option value={"Condyle"}>{"Condyle"}</option>
-                        </Field>
-
-                      </Condition>
-
-                      <Condition when="region" is="Condyle">
-                        <Field name="position" component="select" type="radio">
-                          <option value="position">Position</option>
-                          {cartposition.map((type) => (<option value={type}>{type}</option>))}
+                          {patellaregion.map((type) => (<option value={type}>{type}</option>))}
 
                         </Field>
 
                       </Condition>
+
 
                     </div>
                   </div>

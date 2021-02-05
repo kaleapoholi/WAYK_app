@@ -44,7 +44,7 @@ export default class Profile extends Component {
     }
   }
 
-  
+
 
   onChangeAnnotUser(e) {
     const userId = e.target.value;
@@ -204,6 +204,7 @@ export default class Profile extends Component {
             </ul>
 
           </div>
+          
           <div className="col-md-6">
             {currentExam != null ? (
               <div>
@@ -244,11 +245,11 @@ export default class Profile extends Component {
                         <label>
                           <button classename="badge badge-primary mr-2"
                             onClick={() => this.updateState("LU")}>
-                            Terminer la saisie 
+                            Terminer la saisie
                           </button>
 
                         </label>
-                      ) }
+                      )}
 
                     </label>
 

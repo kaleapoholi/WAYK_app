@@ -20,7 +20,14 @@ module.exports = (sequelize, Sequelize) => {
         },
         state:{
             type: Sequelize.BOOLEAN
+        },
+        laterality:{
+            type: Sequelize.STRING
+        },
+        effusion:{
+            type: Sequelize.STRING
         }
+
     });
 
     return GA;
