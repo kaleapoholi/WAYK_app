@@ -1,5 +1,5 @@
-module.exports={
-    HOST: "localhost",
+module.exports = {
+  HOST: "localhost",
   USER: "root",
   PASSWORD: "password",
   DB: "collecte",
