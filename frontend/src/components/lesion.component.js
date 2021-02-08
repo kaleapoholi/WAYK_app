@@ -38,7 +38,7 @@ export default class LesionForm extends Component {
 
         gaID: null,
 
-      }
+      },
 
     };
   }
@@ -121,8 +121,9 @@ export default class LesionForm extends Component {
       window.alert(JSON.stringify(values, 0, 2));
       this.saveLesion(values);
 
-      //window.location=`/GA/${currentexamID}`;
     }
+
+
 
     const bonetypes = { "Fissure": "OS_FIS", "Fracture": "OS_FRA", "Contusion/ Œdème": "OS_CON", "Tumeur": "OS_TUM", "Nécrose": "OS_NEC", "Dysplasie": "OS_DYS" };
     const bonecartlocalisation = ["Tibia", "Fémur", "Patella", "Fibula"]
@@ -134,10 +135,9 @@ export default class LesionForm extends Component {
 
     const carttypes = { "Focal": "CA_FOC", "Diffus": "CA_DIF" };
     const cartcarac = ["Grade I à III", "Grade IV"];
-    //const cartregionfem = ["Trochlée", "Condyle"];
     const position = ["Médial", "Latéral"];
 
-    const ligtypes = { "Lésion": "Lesion", "Dégénératif": "LI_DEG", "Kyste": "LI_KYS" };
+    const ligtypes = { "Lésion": "", "Dégénératif": "LI_DEG", "Kyste": "LI_KYS", "Perte de Substance": "LI_PER" };
     const depth = ["Complète", "Partielle"];
     const ligcaract = ["Désorganisation", "Interruption Franche", "Désinsertion", "Distension", "Épaississement", "Anomalies de contour"];
 
@@ -148,16 +148,15 @@ export default class LesionForm extends Component {
     const ligposition = ["Distale", "Proximale", "Moyen"];
     const description = ["Horizontalisation de la partie distale", "Verticalisation de la partie proximale", "Bascule antérieure de la partie distale", "Mise en nourrice du LCA"];
 
-    const mentypes = { "Lésion": "Lesion", "Dégénératif": "ME_DEG", "Kyste": "ME_KYS" };
+    const mentypes = { "Lésion": "", "Dégénératif": "ME_DEG", "Kyste": "ME_KYS", "Perte de Substance": "ME_PER" };
     const menmigration = ["Déplacé", "Non Déplacé"];
     const menorientation = ["Verticale", "Horizontale"];
-    const mencaracterisationsans = { "Anse de seau": "ME_ANS", "Fragment Libre": "ME_FRA", "Languette": "ME_LAN" };
-    const mencaracterisationvert = { "Longitudinale": "ME_LON", "Radiaire": "ME_RAD" };
-
+    const mencaracterisationsans = ["Anse de seau", "Fragment Libre", "Languette"];
+    const mencaracterisationvert = ["Longitudinale", "Radiaire"];
     const menlocalisation = ["Médial", "Latéral"];
     const menregion = ["Racine", "Corps", "Corne"];
     const menposition = ["Antérieur", "Postérieur"];
-
+    const menlabel = { "Anse de seau": "ME_ANS", "Fragment Libre": "ME_FRA", "Languette": "ME_LAN", "Longitudinale": "ME_LON", "Radiaire": "ME_RAD" };
 
     return (
       <Styles>
@@ -177,41 +176,15 @@ export default class LesionForm extends Component {
 
                     <label>Type de lésion</label>
 
-                    <div className="custom-control custom-radio custom-control-inline">
+                    <div >
                       <label>
                         <Field name="type" component="select" type="radio">
                           <option value="type">Type</option>
                           {Object.keys(mentypes).map((type) => (
-                            <option value={type}>{type}</option>
+                            <option value={type} >{type}</option>
                           ))}
                         </Field>
                       </label>
-
-                    </div>
-
-                    <div>
-
-                      <Condition when="type" is={"Dégénératif"}>
-                        <label>
-                          <Field name="label" component="select" type="radio">
-                            <option value="label">Label</option>
-                            <option value={mentypes[values.type]}>{mentypes[values.type]}</option>
-
-                          </Field>
-                        </label>
-
-                      </Condition>
-
-                      <Condition when="type" is={"Kyste"}>
-                        <label>
-                          <Field name="label" component="select" type="radio">
-                            <option value="label">Label</option>
-                            <option value={mentypes[values.type]}>{mentypes[values.type]}</option>
-
-                          </Field>
-                        </label>
-
-                      </Condition>
 
                     </div>
 
@@ -219,103 +192,72 @@ export default class LesionForm extends Component {
 
                       <Condition when="type" is={"Lésion"}>
 
-                        <div className="container mt-3">
+                        <div >
 
                           <label>Complexité de la lésion </label>{' '}
 
-                          <label>
-                            <Field name="complexity" component="select" type="radio" >
-                              <option value="complexity">Complexité</option>
-                              <option value="Simple">Simple</option>
-                              <option value="Complexe">Complexe</option>
-                            </Field>
-                          </label>
+                          <div>
+                            <label>
+                              <Field name="complexity" component="select" type="radio" >
+                                <option value="complexity">Complexité</option>
+                                <option value="Simple">Simple</option>
+                                <option value="Complexe">Complexe</option>
+                              </Field>
+                            </label>
+                          </div>
 
                           <Condition when="complexity" is={"Simple"}>
 
-                            <label>Caractérisation</label>
-
+                            <label>Migration</label>
                             <label>
                               <Field name="migration" component="select" type="radio">
                                 <option value="migration">Migration</option>
                                 {menmigration.map((type) => (<option value={type}>{type}</option>))}
-
                               </Field>
                             </label>
 
                             <Condition when="migration" is={"Déplacé"}>
 
                               <label>Caractérisation</label>
-
-                              <label>
-                                <Field name="caracterisation" component="select" type="radio">
-                                  <option value="caracterisation">Caractérisation</option>
-                                  {Object.keys(mencaracterisationsans).map((type) => (<option value={type}>{type}</option>))}
-
-                                </Field>
-
-                                <Field name="label" component="select" type="radio">
-                                  <option value="label">Label</option>
-                                  <option value={mencaracterisationsans[values.caracterisation]}>{mencaracterisationsans[values.caracterisation]}</option>
-
-                                </Field>
-                              </label>
-
+                              <div>
+                                <label>
+                                  <Field name="caracterisation" component="select" type="radio">
+                                    <option value="caracterisation">Caractérisation</option>
+                                    {mencaracterisationsans.map((type) => (<option value={type}>{type}</option>))}
+                                  </Field>
+                                </label>
+                              </div>
 
                             </Condition>
 
                             <Condition when="migration" is={"Non Déplacé"}>
-
-
                               <label>Orientation</label>
                               <label>
                                 <Field name="orientation" component="select" type="radio">
                                   <option value="orientation">Orientation</option>
                                   {menorientation.map((type) => (<option value={type}>{type}</option>))}
-
                                 </Field>
                               </label>
-
-
 
                               <Condition when="orientation" is={"Verticale"}>
 
                                 <label>Caractérisation</label>
-
                                 <label>
                                   <Field name="caracterisation" component="select" type="radio">
                                     <option value="caracterisation">Caractérisation</option>
-                                    {Object.keys(mencaracterisationvert).map((type) => (<option value={type}>{type}</option>))}
-
-                                  </Field>
-
-                                  <Field name="label" component="select" type="radio">
-                                    <option value="label">Label</option>
-                                    <option value={mencaracterisationvert[values.caracterisation]}>{mencaracterisationvert[values.caracterisation]}</option>
-
+                                    {mencaracterisationvert.map((type) => (<option value={type}>{type}</option>))}
                                   </Field>
                                 </label>
-
                               </Condition>
 
                               <Condition when="orientation" is={"Horizontale"}>
-
                                 <label>Caractérisation</label>
-
                                 <label>
                                   <Field name="caracterisation" component="select" type="radio">
                                     <option value="caracterisation">Caractérisation</option>
                                     <option value="Horizontale">Horizontale</option>
-
-
-                                  </Field>
-
-                                  <Field name="label" component="select" type="radio">
-                                    <option value="label">Label</option>
-                                    <option value="ME_HOR">ME_HOR</option>
                                   </Field>
                                 </label>
-
                               </Condition>
 
                               <label>
@@ -324,60 +266,60 @@ export default class LesionForm extends Component {
                                   {depth.map((type) => (<option value={type}>{type}</option>))}
                                 </Field>
                               </label>
-
-
-
                             </Condition>
-
-
-                          </Condition>
-
-
-                        </div>
-
-                        <div>
-
-                          <label>Localisation </label>{' '}
-
-                          <label>
-                            <Field name="localisation" component="select" type="radio" >
-                              <option value="localisation">Localisation</option>
-                              {menlocalisation.map((type) => (<option value={type}>{type}</option>))}
-                            </Field>
-
-
-                            <Field name="region" component="select" type="radio">
-                              <option value="region">Région</option>
-                              {menregion.map((type) => (<option value={type}>{type}</option>))}
-
-                            </Field>
-                          </label>
-
-                          <Condition when="region" is="Racine">
-                            <Field name="position" component="select" type="radio">
-                              <option value="position">Position</option>
-                              {menposition.map((type) => (<option value={type}>{type}</option>))}
-
-                            </Field>
-
-                          </Condition>
-                          <Condition when="region" is="Corne">
-                            <Field name="position" component="select" type="radio">
-                              <option value="position">Position</option>
-                              {menposition.map((type) => (<option value={type}>{type}</option>))}
-
-                            </Field>
-
                           </Condition>
 
                         </div>
-
-
                       </Condition>
+                      <div>
+
+                        <label>Localisation </label>{' '}
+
+                        <label>
+                          <Field name="localisation" component="select" type="radio" >
+                            <option value="localisation">Localisation</option>
+                            {menlocalisation.map((type) => (<option value={type}>{type}</option>))}
+                          </Field>
+
+
+                          <Field name="region" component="select" type="radio">
+                            <option value="region">Région</option>
+                            {menregion.map((type) => (<option value={type}>{type}</option>))}
+                          </Field>
+                        </label>
+
+                        <Condition when="region" is="Racine">
+                          <Field name="position" component="select" type="radio">
+                            <option value="position">Position</option>
+                            {menposition.map((type) => (<option value={type}>{type}</option>))}
+                          </Field>
+
+                        </Condition>
+                        <Condition when="region" is="Corne">
+                          <Field name="position" component="select" type="radio">
+                            <option value="position">Position</option>
+                            {menposition.map((type) => (<option value={type}>{type}</option>))}
+                          </Field>
+                        </Condition>
+
+                      </div>
+
+
+
+
+                      {values.type === "Lésion" ? (
+                        values.label = menlabel[values.caracterisation]
+                      ) : (
+                          values.label = mentypes[values.type]
+                        )
+                      }
 
                     </div>
 
+
                   </div>
+
+
                 }
 
                 {currentStructure === "bonestate" &&
@@ -393,17 +335,8 @@ export default class LesionForm extends Component {
                             <option value={type}>{type}</option>
                           ))}
                         </Field>
+                        {values.label = bonetypes[values.type]}
                       </label>{' '}
-
-                      <Condition when="type" is={values.type}>
-                        <Field name="label" component="select" type="radio">
-                          <option value="label">Label</option>
-                          <option value={bonetypes[values.type]}>{bonetypes[values.type]}</option>
-
-                        </Field>
-
-                      </Condition>
-
 
                       <label>Localisation </label>{' '}
 
@@ -437,7 +370,7 @@ export default class LesionForm extends Component {
                         </Field>
 
                       </Condition>
-                      
+
                       <Condition when="localisation" is="Fémur">
                         <Field name="region" component="select" type="radio">
                           <option value="region">Région</option>
@@ -496,116 +429,65 @@ export default class LesionForm extends Component {
 
                     </div>
 
-                    <div>
-
-
-                      <Condition when="type" is={"Dégénératif"}>
-                        <label>
-                          <Field name="label" component="select" type="radio">
-                            <option value="label">Label</option>
-                            <option value={ligtypes[values.type]}>{ligtypes[values.type]}</option>
-
-                          </Field>
-                        </label>
-
-
-
-
-                      </Condition>
-
-                      <Condition when="type" is={"Kyste"}>
-                        <label>
-                          <Field name="label" component="select" type="radio">
-                            <option value="label">Label</option>
-                            <option value={ligtypes[values.type]}>{ligtypes[values.type]}</option>
-
-                          </Field>
-                        </label>
-
-                      </Condition>
-
-                    </div>
 
                     <div className="container mt-3">
 
-                      <Condition when="type" is={"Lésion"}>
 
-                        <div className="container mt-3">
-                          <label>Localisation </label>{' '}
 
+                      <div className="container mt-3">
+                        <label>Localisation </label>{' '}
+
+                        <label>
+                          <Field name="localisation" component="select" type="radio" >
+                            <option value="localisation">Localisation</option>
+                            {liglocalisation.map((type) => (<option value={type}>{type}</option>))}
+                          </Field>
+                        </label>
+
+                        <label>
+
+                          <Condition when="localisation" is="Croisé">
+                            <label>
+                              <Field name="region" component="select" type="radio" >
+                                <option value="region">Région</option>
+                                {Object.keys(ligcroiseregion).map((type) => (<option value={type}>{type}</option>))}
+                              </Field>
+                            </label>
+                          </Condition>
+
+                        </label>
+
+                        <Condition when="localisation" is="Collatéral">
                           <label>
-                            <Field name="localisation" component="select" type="radio" >
-                              <option value="localisation">Localisation</option>
-                              {liglocalisation.map((type) => (<option value={type}>{type}</option>))}
+                            <Field name="region" component="select" type="radio" >
+                              <option value="region">Région</option>
+                              {Object.keys(ligcolregion).map((type) => (<option value={type}>{type}</option>))}
                             </Field>
                           </label>
 
+
+                        </Condition>
+                        <Condition when="localisation" is="Fémoro patellaire">
                           <label>
-
-                            <Condition when="localisation" is="Croisé">
-                              <label>
-                                <Field name="region" component="select" type="radio" >
-                                  <option value="region">Région</option>
-                                  {Object.keys(ligcroiseregion).map((type) => (<option value={type}>{type}</option>))}
-                                </Field>
-                              </label>
-
-                              <label>
-                                <Field name="label" component="select" type="radio">
-                                  <option value="label">Label</option>
-                                  <option value={ligcroiseregion[values.region]}>{ligcroiseregion[values.region]}</option>
-
-                                </Field>
-                              </label>
-
-
-                            </Condition>
-
+                            <Field name="region" component="select" type="radio" >
+                              <option value="region">Région</option>
+                              {Object.keys(ligfemregion).map((type) => (<option value={type}>{type}</option>))}
+                            </Field>
                           </label>
 
-                          <Condition when="localisation" is="Collatéral">
-                            <label>
-                              <Field name="region" component="select" type="radio" >
-                                <option value="region">Région</option>
-                                {Object.keys(ligcolregion).map((type) => (<option value={type}>{type}</option>))}
-                              </Field>
 
-                              <Field name="label" component="select" type="radio">
-                                <option value="label">Label</option>
-                                <option value={ligcolregion[values.region]}>{ligcolregion[values.region]}</option>
+                        </Condition>
 
-                              </Field>
-                            </label>
+                      </div>
 
+                      <Field name="position" component="select" type="radio">
+                        <option value="position">Position</option>
+                        {ligposition.map((type) => (
+                          <option value={type}>{type}</option>
+                        ))}
+                      </Field>
 
-                          </Condition>
-                          <Condition when="localisation" is="Fémoro patellaire">
-                            <label>
-                              <Field name="region" component="select" type="radio" >
-                                <option value="region">Région</option>
-                                {Object.keys(ligfemregion).map((type) => (<option value={type}>{type}</option>))}
-                              </Field>
-
-                              <Field name="label" component="select" type="radio">
-                                <option value="label">Label</option>
-                                <option value={ligfemregion[values.region]}>{ligfemregion[values.region]}</option>
-
-                              </Field>
-                            </label>
-
-
-                          </Condition>
-
-                        </div>
-
-                        <Field name="position" component="select" type="radio">
-                          <option value="position">Position</option>
-                          {ligposition.map((type) => (
-                            <option value={type}>{type}</option>
-                          ))}
-                        </Field>
-
-
+                      <Condition when="type" is={"Lésion"}>
                         <Field name="caracterisation" component="select" type="radio">
                           <option value="caracterisation">Caractérisation</option>
                           {ligcaract.map((type) => (
@@ -636,11 +518,33 @@ export default class LesionForm extends Component {
 
                           </div>
                         </div>
-
-
-
-
                       </Condition>
+
+
+
+
+
+                      {values.type === "Lésion" ? (
+                        (() => {
+                          if (values.localisation === "Croisé") {
+                            return (
+                              values.label = ligcroiseregion[values.region]
+                            )
+                          } else if (values.localisation === "Collatéral") {
+                            return (
+                              values.label = ligcolregion[values.region]
+                            )
+                          } else {
+                            return (
+                              values.label = ligfemregion[values.region]
+                            )
+                          }
+                        })()
+                      ) : (
+                          values.label = ligtypes[values.type]
+                        )
+                      }
+
 
                     </div>
 
@@ -662,16 +566,10 @@ export default class LesionForm extends Component {
                             <option value={type}>{type}</option>
                           ))}
                         </Field>
+                        {values.label = carttypes[values.type]}
                       </label>{' '}
 
-                      <Condition when="type" is={values.type}>
-                        <Field name="label" component="select" type="radio">
-                          <option value="label">Label</option>
-                          <option value={carttypes[values.type]}>{carttypes[values.type]}</option>
 
-                        </Field>
-
-                      </Condition>
 
                       <Condition when="type" is={values.type}>
                         <Field name="caracterisation" component="select" type="radio">
@@ -715,7 +613,7 @@ export default class LesionForm extends Component {
                         </Field>
 
                       </Condition>
-                      
+
                       <Condition when="localisation" is="Fémur">
                         <Field name="region" component="select" type="radio">
                           <option value="region">Région</option>

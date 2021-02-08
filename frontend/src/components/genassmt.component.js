@@ -309,14 +309,16 @@ export default class GAForm extends Component {
                         </tr>
                       </thead>
                       <tbody>
+
                         {lesions &&
                           lesions.map((lesion, index) => (
+
                             <tr>
-                              <th scope="row">{lesion.id}</th>
+                              <th>{lesion.id}</th>
                               <td>{lesion.structure}</td>
                               <td>{lesion.type}</td>
                               <td>{lesion.label}</td>
-                              <td>{index + 1}</td>
+                              <th>{index + 1}</th>
                               <td>{lesion.localisation}</td>
                               <td>{lesion.region}</td>
                               <td>{lesion.position}</td>
@@ -325,7 +327,6 @@ export default class GAForm extends Component {
                               <td>{lesion.coronalvis}</td>
 
                             </tr>
-
 
                           ))}
 

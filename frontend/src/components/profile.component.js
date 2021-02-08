@@ -12,6 +12,9 @@ export default class Profile extends Component {
     this.onChangeExamState = this.onChangeExamState.bind(this);
     this.retrieveUsers = this.retrieveUsers.bind(this);
     this.retrieveExams = this.retrieveExams.bind(this);
+    this.retrieveNewExams = this.retrieveNewExams.bind(this);
+    this.retrieveEncourslectureExams = this.retrieveEncourslectureExams.bind(this);
+    this.retrieveLuExams = this.retrieveLuExams.bind(this);
     this.refreshList = this.refreshList.bind(this);
     this.updateUser = this.updateUser.bind(this);
     this.updateState = this.updateState.bind(this);
@@ -19,6 +22,9 @@ export default class Profile extends Component {
     this.state = {
       currentUser: AuthService.getCurrentUser(),
       exams: [],
+      new_exams: [],
+      encourslecture_exams : [],
+      lu_exams: [],
       users: [],
       currentExam: {
         id: null,
@@ -27,6 +33,9 @@ export default class Profile extends Component {
         userId: null
       },
       currentIndex: -1,
+      currentNewIndex : -1,
+      currentEnLectIndex : -1,
+      currentLuIndex : -1,
       showAdminContent: false,
       showUserContent: false
     };
@@ -35,6 +44,9 @@ export default class Profile extends Component {
   componentDidMount() {
     const user = this.state.currentUser;
     this.retrieveExams();
+    this.retrieveNewExams();
+    this.retrieveEncourslectureExams();
+    this.retrieveLuExams();
     this.retrieveUsers();
     if (user) {
       this.setState({
@@ -85,6 +97,45 @@ export default class Profile extends Component {
       });
   }
 
+  retrieveNewExams(){
+    ExamDataService.findByUserAndState(this.state.currentUser.id, "NEW")
+    .then(response => {
+      this.setState({
+        new_exams: response.data
+      });
+      console.log(response.data);
+    })
+    .catch(e => {
+      console.log(e);
+    });
+  }
+
+  retrieveEncourslectureExams(){
+    ExamDataService.findByUserAndState(this.state.currentUser.id, "EN COURS DE LECTURE")
+    .then(response => {
+      this.setState({
+        encourslecture_exams: response.data
+      });
+      console.log(response.data);
+    })
+    .catch(e => {
+      console.log(e);
+    });
+  }
+
+  retrieveLuExams(){
+    ExamDataService.findByUserAndState(this.state.currentUser.id, "LU")
+    .then(response => {
+      this.setState({
+        lu_exams: response.data
+      });
+      console.log(response.data);
+    })
+    .catch(e => {
+      console.log(e);
+    });
+  }
+
   retrieveUsers() {
     ExamDataService.findAllUser()
       .then(response => {
@@ -101,10 +152,16 @@ export default class Profile extends Component {
 
   refreshList() {
     this.retrieveExams();
+    this.retrieveNewExams();
+    this.retrieveEncourslectureExams();
+    this.retrieveLuExams();
     this.retrieveUsers();
     this.setState({
       currentExam: null,
-      currentIndex: -1
+      currentIndex: -1,
+      currentNewIndex: -1,
+      currentEnLectIndex:-1,
+      currentLuIndex:-1
     });
   }
 
@@ -112,6 +169,33 @@ export default class Profile extends Component {
     this.setState({
       currentExam: exam,
       currentIndex: index
+    });
+  }
+
+  setActiveNewExam(exam, index) {
+    this.setState({
+      currentExam: exam,
+      currentNewIndex: index,
+      currentEnLectIndex:-1,
+      currentLuIndex:-1
+    });
+  }
+
+  setActiveEnLectExam(exam, index) {
+    this.setState({
+      currentExam: exam,
+      currentEnLectIndex: index,
+      currentNewIndex: -1,
+      currentLuIndex:-1
+    });
+  }
+
+  setActiveLuExam(exam, index) {
+    this.setState({
+      currentExam: exam,
+      currentLuIndex: index,
+      currentNewIndex: -1,
+      currentEnLectIndex:-1
     });
   }
 
@@ -171,7 +255,7 @@ export default class Profile extends Component {
 
 
   render() {
-    const { currentUser, exams, users, currentExam, currentIndex, showAdminContent, showUserContent } = this.state;
+    const { currentUser, new_exams, encourslecture_exams, lu_exams, users, currentExam, currentNewIndex, currentEnLectIndex, currentLuIndex, showAdminContent, showUserContent } = this.state;
 
     return (
       <div className="container">
@@ -182,20 +266,20 @@ export default class Profile extends Component {
           </h3>
         </header>
 
-        <div className="list row">
+        <div >
 
           <div className="col-md-6">
-            <h4>Liste de travail</h4>
+            <h4>Nouveaux Examens</h4>
 
             <ul className="list-group">
-              {exams &&
-                exams.map((exam, index) => (
+              {new_exams &&
+                new_exams.map((exam, index) => (
                   <li
                     className={
                       "list-group-item " +
-                      (index === currentIndex ? "active" : "")
+                      (index === currentNewIndex ? "active" : "")
                     }
-                    onClick={() => this.setActiveExam(exam, index)}
+                    onClick={() => this.setActiveNewExam(exam, index)}
                     key={index}
                   >
                     {exam.dirname}
@@ -204,8 +288,50 @@ export default class Profile extends Component {
             </ul>
 
           </div>
-          
+
           <div className="col-md-6">
+            <h4>Examens Examens En Cours De Lecture</h4>
+
+            <ul className="list-group">
+              {encourslecture_exams &&
+                encourslecture_exams.map((exam, index) => (
+                  <li
+                    className={
+                      "list-group-item " +
+                      (index === currentEnLectIndex ? "active" : "")
+                    }
+                    onClick={() => this.setActiveEnLectExam(exam, index)}
+                    key={index}
+                  >
+                    {exam.dirname}
+                  </li>
+                ))}
+            </ul>
+
+          </div>
+
+          <div className="col-md-6">
+            <h4>Examens Lus</h4>
+
+            <ul className="list-group">
+              {lu_exams &&
+                lu_exams.map((exam, index) => (
+                  <li
+                    className={
+                      "list-group-item " +
+                      (index === currentLuIndex ? "active" : "")
+                    }
+                    onClick={() => this.setActiveLuExam(exam, index)}
+                    key={index}
+                  >
+                    {exam.dirname}
+                  </li>
+                ))}
+            </ul>
+
+          </div>
+
+          <div className="list row">
             {currentExam != null ? (
               <div>
                 <h4>Examen</h4>

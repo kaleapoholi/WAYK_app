@@ -55,11 +55,6 @@ class App extends Component {
             WAYK : For radiologists who say Knee
           </Link>
           <div className="navbar-nav mr-auto">
-            <li className="nav-item">
-              <Link to={"/home"} className="nav-link">
-                Welcome Home
-              </Link>
-            </li>
 
             {showModeratorBoard && (
               <li className="nav-item">
@@ -87,7 +82,7 @@ class App extends Component {
               <div>
                 <li className="nav-item">
                   <Link to={"/user"} className="nav-link">
-                    Guideline
+                    Documentation
                 </Link>
                 </li>
                 <li className="nav-item">
