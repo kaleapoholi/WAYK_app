@@ -6,6 +6,9 @@ module.exports = (sequelize, Sequelize) => {
       state: {
         type: Sequelize.STRING
       },
+      valid: {
+        type: Sequelize.BOOLEAN
+      }
     });
   
     return Exam;

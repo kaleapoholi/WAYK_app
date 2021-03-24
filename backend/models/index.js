@@ -40,14 +40,34 @@ db.user.belongsToMany(db.role, {
   foreignKey: "userId",
   otherKey: "roleId"
 });
-db.user.hasMany(db.exam, {as: "exams"});
-db.exam.belongsTo(db.user, {
+db.user.belongsToMany(db.exam, {
+  through: "user_exams",
   foreignKey: "userId",
-  as: "user"
+  otherKey : "examId"
+})
+db.exam.belongsToMany(db.user, {
+  through: "user_exams",
+  foreignKey: "examId",
+  otherKey: "userId"
+
+})
+// db.user.hasMany(db.exam, {as: "exams"});
+// db.exam.belongsTo(db.user, {
+//   foreignKey: "userId",
+//   as: "user"
+// });
+
+db.exam.hasMany(db.GA, {as: "genforms"});
+db.GA.belongsTo(db.exam, {
+  foreignKey: "examId",
+  as: "exam"
 });
 
-db.exam.hasOne(db.GA, {sourceKey:"id", foreignKey:"examID", unique: true});
-db.GA.belongsTo(db.exam, {targetKey:"id", foreignKey: "examID", unique: true});
+// db.exam.hasOne(db.GA, {sourceKey:"id", foreignKey:"examID", unique: true});
+// db.GA.belongsTo(db.exam, {targetKey:"id", foreignKey: "examID", unique: true});
+
+db.user.hasMany(db.GA, {as: "genforms"});
+db.GA.belongsTo(db.user, {foreignKey: "userId"});
 
 db.GA.hasMany(db.lesion, {sourceKey:"id", foreignKey:"gaID"});
 db.lesion.belongsTo(db.GA, {targetKey:"id", foreignKey:"gaID"});
