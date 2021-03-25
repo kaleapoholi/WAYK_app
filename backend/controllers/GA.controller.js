@@ -1,5 +1,5 @@
 const { Op } = require("sequelize");
-const { GA, exam } = require("../models");
+const { GA, exam, user } = require("../models");
 const db = require("../models");
 const Exam = db.exam;
 const General_Assessment = db.GA;
@@ -7,7 +7,6 @@ const General_Assessment = db.GA;
 
 // Create and Save a new GA
 exports.create = (req , res ) => {
-  const examID= req.params.examID;
   
   const general_assessment = {
       quality : req.body.quality,
@@ -19,7 +18,8 @@ exports.create = (req , res ) => {
       state: req.body.state ? req.body.state : false,
       laterality : req.body.laterality,
       effusion : req.body.effusion,
-      examID : examID,
+      examId : req.params.examId,
+      userId : req.params.userId
   };
   
     // Save GA in the database
@@ -71,7 +71,7 @@ exports.findOne = (req, res) => {
 
 // Find one Exam by examID
 exports.findByExam = (req, res) => {
-  Exam.findAll({where : {id : req.params.examID}}
+  Exam.findAll({where : {id : req.params.examId}}
     )
     .then(data => {
       res.send(data);
@@ -87,6 +87,20 @@ exports.findByExam = (req, res) => {
 // Find GA by ExamID
 exports.findGAbyExamID = (req, res) => {
   General_Assessment.findAll({where : {examID : req.params.examID}}
+    )
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Error retrieving Exam" 
+      });
+    });
+}
+
+// Find GA by ExamId and UserId
+exports.findGAbyExamUserId = (req, res) => {
+  General_Assessment.findAll({where : {examId : req.params.examId, userId : req.params.userId}}
     )
     .then(data => {
       res.send(data);

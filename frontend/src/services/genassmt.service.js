@@ -14,8 +14,12 @@ class GADataService {
         return http.get(`/GA/GAexam/${examID}`);
     }
 
-    create(data, examID){
-        return http.post(`/GA/${examID}`, data);
+    findGAbyExamUserID(examId, userId){
+        return http.get(`/GA/ExamUserId/${examId}/${userId}`);
+    }
+
+    create(data, examId, userId){
+        return http.post(`/GA/create/${examId}/${userId}`, data);
     }
 
     findAllPublished(){

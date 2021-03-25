@@ -15,6 +15,9 @@ export default class Profile extends Component {
     this.retrieveNewExams = this.retrieveNewExams.bind(this);
     this.retrieveEncourslectureExams = this.retrieveEncourslectureExams.bind(this);
     this.retrieveLuExams = this.retrieveLuExams.bind(this);
+    this.retrieveEnCoursAnnotExams = this.retrieveEnCoursAnnotExams.bind(this);
+    this.retrieveAnnotatedExams = this.retrieveAnnotatedExams.bind(this);
+    this.retrieveCrossAnalysisExams = this.retrieveCrossAnalysisExams.bind(this);
     this.refreshList = this.refreshList.bind(this);
     this.updateUser = this.updateUser.bind(this);
     this.updateState = this.updateState.bind(this);
@@ -23,19 +26,25 @@ export default class Profile extends Component {
       currentUser: AuthService.getCurrentUser(),
       exams: [],
       new_exams: [],
-      encourslecture_exams : [],
+      encourslecture_exams: [],
       lu_exams: [],
+      annot_progress: [],
+      annotated: [],
+      crossanalysis: [],
       users: [],
       currentExam: {
         id: null,
         dirname: "",
         state: "",
-        userId: null
+        valid:0,
       },
       currentIndex: -1,
-      currentNewIndex : -1,
-      currentEnLectIndex : -1,
-      currentLuIndex : -1,
+      currentNewIndex: -1,
+      currentEnLectIndex: -1,
+      currentLuIndex: -1,
+      currentAnnotProgressIndex: -1,
+      currentAnnotatedIndex: -1,
+      currentCrossAnalysisIndex: -1,
       showAdminContent: false,
       showUserContent: false
     };
@@ -47,6 +56,9 @@ export default class Profile extends Component {
     this.retrieveNewExams();
     this.retrieveEncourslectureExams();
     this.retrieveLuExams();
+    this.retrieveEnCoursAnnotExams();
+    this.retrieveAnnotatedExams();
+    this.retrieveCrossAnalysisExams();
     this.retrieveUsers();
     if (user) {
       this.setState({
@@ -88,7 +100,7 @@ export default class Profile extends Component {
     ExamDataService.findByUser(this.state.currentUser.id)
       .then(response => {
         this.setState({
-          exams: response.data
+          exams: response.data.exams
         });
         console.log(response.data);
       })
@@ -97,43 +109,82 @@ export default class Profile extends Component {
       });
   }
 
-  retrieveNewExams(){
-    ExamDataService.findByUserAndState(this.state.currentUser.id, "NEW")
-    .then(response => {
-      this.setState({
-        new_exams: response.data
+  retrieveNewExams() {
+    ExamDataService.findByUserAndState(this.state.currentUser.id, "NEW", 0)
+      .then(response => {
+        this.setState({
+          new_exams: response.data[0].exams
+        });
+        console.log(response.data);
+      })
+      .catch(e => {
+        console.log(e);
       });
-      console.log(response.data);
-    })
-    .catch(e => {
-      console.log(e);
-    });
   }
 
-  retrieveEncourslectureExams(){
-    ExamDataService.findByUserAndState(this.state.currentUser.id, "EN COURS DE LECTURE")
-    .then(response => {
-      this.setState({
-        encourslecture_exams: response.data
+  retrieveEncourslectureExams() {
+    ExamDataService.findByUserAndState(this.state.currentUser.id, "EN COURS DE LECTURE", 0)
+      .then(response => {
+        this.setState({
+          encourslecture_exams: response.data[0].exams
+        });
+        console.log(response.data);
+      })
+      .catch(e => {
+        console.log(e);
       });
-      console.log(response.data);
-    })
-    .catch(e => {
-      console.log(e);
-    });
   }
 
-  retrieveLuExams(){
-    ExamDataService.findByUserAndState(this.state.currentUser.id, "LU")
-    .then(response => {
-      this.setState({
-        lu_exams: response.data
+  retrieveLuExams() {
+    ExamDataService.findByUserAndState(this.state.currentUser.id, "LU", 0)
+      .then(response => {
+        this.setState({
+          lu_exams: response.data[0].exams
+        });
+        console.log(response.data);
+      })
+      .catch(e => {
+        console.log(e);
       });
-      console.log(response.data);
-    })
-    .catch(e => {
-      console.log(e);
-    });
+  }
+
+  retrieveEnCoursAnnotExams() {
+    ExamDataService.findByUserAndState(this.state.currentUser.id, "ANNOT IN PROGRESS", 0)
+      .then(response => {
+        this.setState({
+          annot_progress: response.data[0].exams
+        });
+        console.log(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }
+
+  retrieveAnnotatedExams() {
+    ExamDataService.findByUserAndState(this.state.currentUser.id, "ANNOTATED", 0)
+      .then(response => {
+        this.setState({
+          annotated: response.data[0].exams
+        });
+        console.log(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }
+
+  retrieveCrossAnalysisExams() {
+    ExamDataService.findByUserAndValid(this.state.currentUser.id, 1)
+      .then(response => {
+        this.setState({
+          crossanalysis: response.data[0].exams
+        });
+        console.log(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
   }
 
   retrieveUsers() {
@@ -155,13 +206,19 @@ export default class Profile extends Component {
     this.retrieveNewExams();
     this.retrieveEncourslectureExams();
     this.retrieveLuExams();
+    this.retrieveEnCoursAnnotExams();
+    this.retrieveAnnotatedExams();
+    this.retrieveCrossAnalysisExams();
     this.retrieveUsers();
     this.setState({
       currentExam: null,
       currentIndex: -1,
       currentNewIndex: -1,
-      currentEnLectIndex:-1,
-      currentLuIndex:-1
+      currentEnLectIndex: -1,
+      currentLuIndex: -1,
+      currentAnnotProgressIndex: -1,
+      currentAnnotatedIndex: -1,
+      currentCrossAnalysisIndex: -1,
     });
   }
 
@@ -176,8 +233,11 @@ export default class Profile extends Component {
     this.setState({
       currentExam: exam,
       currentNewIndex: index,
-      currentEnLectIndex:-1,
-      currentLuIndex:-1
+      currentEnLectIndex: -1,
+      currentLuIndex: -1,
+      currentAnnotProgressIndex: -1,
+      currentAnnotatedIndex: -1,
+      currentCrossAnalysisIndex: -1,
     });
   }
 
@@ -186,7 +246,10 @@ export default class Profile extends Component {
       currentExam: exam,
       currentEnLectIndex: index,
       currentNewIndex: -1,
-      currentLuIndex:-1
+      currentLuIndex: -1,
+      currentAnnotProgressIndex: -1,
+      currentAnnotatedIndex: -1,
+      currentCrossAnalysisIndex: -1,
     });
   }
 
@@ -195,7 +258,46 @@ export default class Profile extends Component {
       currentExam: exam,
       currentLuIndex: index,
       currentNewIndex: -1,
-      currentEnLectIndex:-1
+      currentEnLectIndex: -1,
+      currentAnnotProgressIndex: -1,
+      currentAnnotatedIndex: -1,
+      currentCrossAnalysisIndex: -1,
+    });
+  }
+
+  setActiveAnnotProgressExam(exam, index) {
+    this.setState({
+      currentExam: exam,
+      currentLuIndex: -1,
+      currentNewIndex: -1,
+      currentEnLectIndex: -1,
+      currentAnnotProgressIndex: index,
+      currentAnnotatedIndex: -1,
+      currentCrossAnalysisIndex: -1,
+    });
+  }
+
+  setActiveAnnotatedExam(exam, index) {
+    this.setState({
+      currentExam: exam,
+      currentLuIndex: -1,
+      currentNewIndex: -1,
+      currentEnLectIndex: -1,
+      currentAnnotProgressIndex: -1,
+      currentAnnotatedIndex: index,
+      currentCrossAnalysisIndex: -1,
+    });
+  }
+
+  setActiveCrossAnalysisExam(exam, index) {
+    this.setState({
+      currentExam: exam,
+      currentLuIndex: -1,
+      currentNewIndex: -1,
+      currentEnLectIndex: -1,
+      currentAnnotProgressIndex: -1,
+      currentAnnotatedIndex: -1,
+      currentCrossAnalysisIndex: index,
     });
   }
 
@@ -231,9 +333,9 @@ export default class Profile extends Component {
       id: this.state.currentExam.id,
       dirname: this.state.currentExam.dirname,
       state: state,
-      userId: this.state.currentExam.userId
+      valid : this.state.currentExam.valid
     };
-
+    console.log("la", data)
     ExamDataService.update(this.state.currentExam.id, data)
       .then(response => {
         this.setState(prevState => ({
@@ -255,7 +357,7 @@ export default class Profile extends Component {
 
 
   render() {
-    const { currentUser, new_exams, encourslecture_exams, lu_exams, users, currentExam, currentNewIndex, currentEnLectIndex, currentLuIndex, showAdminContent, showUserContent } = this.state;
+    const { currentUser, new_exams, encourslecture_exams, lu_exams, annot_progress, annotated, crossanalysis, users, currentExam, currentNewIndex, currentEnLectIndex, currentLuIndex, currentAnnotProgressIndex, currentAnnotatedIndex, currentCrossAnalysisIndex, showAdminContent, showUserContent } = this.state;
 
     return (
       <div className="container">
@@ -265,6 +367,7 @@ export default class Profile extends Component {
             <strong>{currentUser.username}</strong> Profile
           </h3>
         </header>
+
 
         <div >
 
@@ -290,7 +393,7 @@ export default class Profile extends Component {
           </div>
 
           <div className="col-md-6">
-            <h4>Examens Examens En Cours De Lecture</h4>
+            <h4>Examens En Cours De Lecture</h4>
 
             <ul className="list-group">
               {encourslecture_exams &&
@@ -331,6 +434,69 @@ export default class Profile extends Component {
 
           </div>
 
+          <div className="col-md-6">
+            <h4>Examens En Cours d'Annotation</h4>
+
+            <ul className="list-group">
+              {annot_progress &&
+                annot_progress.map((exam, index) => (
+                  <li
+                    className={
+                      "list-group-item " +
+                      (index === currentAnnotProgressIndex ? "active" : "")
+                    }
+                    onClick={() => this.setActiveAnnotProgressExam(exam, index)}
+                    key={index}
+                  >
+                    {exam.dirname}
+                  </li>
+                ))}
+            </ul>
+
+          </div>
+
+          <div className="col-md-6">
+            <h4>Examens Annotés</h4>
+
+            <ul className="list-group">
+              {annotated &&
+                annotated.map((exam, index) => (
+                  <li
+                    className={
+                      "list-group-item " +
+                      (index === currentAnnotatedIndex ? "active" : "")
+                    }
+                    onClick={() => this.setActiveAnnotatedExam(exam, index)}
+                    key={index}
+                  >
+                    {exam.dirname}
+                  </li>
+                ))}
+            </ul>
+
+          </div>
+
+          <div className="col-md-6">
+            <h4>Cross Analysis Exams</h4>
+
+            <ul className="list-group">
+              {crossanalysis &&
+                crossanalysis.map((exam, index) => (
+                  <li
+                    className={
+                      "list-group-item " +
+                      (index === currentCrossAnalysisIndex ? "active" : "")
+                    }
+                    onClick={() => this.setActiveCrossAnalysisExam(exam, index)}
+                    key={index}
+                  >
+                    {exam.dirname}
+                  </li>
+                ))}
+            </ul>
+
+          </div>
+
           <div className="list row">
             {currentExam != null ? (
               <div>
@@ -350,17 +516,18 @@ export default class Profile extends Component {
                 <div>
                   {showUserContent && (
                     <label>
-                      <Link to={{ pathname: `/GA/${currentExam.id}`, state: { examID: currentExam.id } }} className="nav-link">
+                      <Link to={{ pathname: `/GA/${currentExam.id}`, state: { exam: currentExam, user: currentUser } }} className="nav-link">
                         {currentExam.state === "NEW" ? (
                           <button classename="badge badge-primary mr-2"
                             onClick={() => this.updateState("EN COURS DE LECTURE")}>
                             Créer le formulaire
                           </button>
                         ) : (
-                            <button classename="badge badge-primary mr-2" >
-                              Lire le formulaire
-                            </button>
-                          )
+                          <button classename="badge badge-primary mr-2" >
+                            
+                            Lire le formulaire
+                          </button>
+                        )
                         }
 
                       </Link>
@@ -372,6 +539,26 @@ export default class Profile extends Component {
                           <button classename="badge badge-primary mr-2"
                             onClick={() => this.updateState("LU")}>
                             Terminer la saisie
+                          </button>
+
+                        </label>
+                      )}
+
+                      {currentExam.state === "LU" && (
+                        <label>
+                          <button classename="badge badge-primary mr-2"
+                            onClick={() => this.updateState("ANNOT IN PROGRESS")}>
+                            Annoter l'examen
+                          </button>
+
+                        </label>
+                      )}
+
+                      {currentExam.state === "ANNOT IN PROGRESS" && (
+                        <label>
+                          <button classename="badge badge-primary mr-2"
+                            onClick={() => this.updateState("ANNOTATED")}>
+                            Annotation terminée
                           </button>
 
                         </label>
@@ -410,11 +597,11 @@ export default class Profile extends Component {
 
 
             ) : (
-                <div>
-                  <br />
-                  <p>Choisir un examen...</p>
-                </div>
-              )}
+              <div>
+                <br />
+                <p>Choisir un examen...</p>
+              </div>
+            )}
           </div>
         </div>
 

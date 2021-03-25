@@ -14,8 +14,10 @@ export default class LesionForm extends Component {
 
     this.state = {
       currentgaID: this.props.location.state.currentGAinfo.gaID,
-      currentexamID: this.props.location.state.currentGAinfo.examID,
+      currentexamID: this.props.location.state.currentGAinfo.exam.id,
       currentStructure: this.props.location.state.currentGAinfo.structure,
+      currentexam: this.props.location.state.currentGAinfo.exam,
+      currentuser: this.props.location.state.currentGAinfo.user,
       retrieved: false,
       currentLesion: {
         id: null,
@@ -109,7 +111,7 @@ export default class LesionForm extends Component {
   render() {
 
     //const {currentgaID, currentStructure, currentGA} = this.state;
-    const { currentexamID, currentStructure, currentLesion } = this.state;
+    const { currentexam, currentuser, currentexamID, currentStructure, currentLesion } = this.state;
 
     const Condition = ({ when, is, children }) => (
       <Field name={when} subscription={{ value: true }}>
@@ -310,8 +312,8 @@ export default class LesionForm extends Component {
                       {values.type === "Lésion" ? (
                         values.label = menlabel[values.caracterisation]
                       ) : (
-                          values.label = mentypes[values.type]
-                        )
+                        values.label = mentypes[values.type]
+                      )
                       }
 
                     </div>
@@ -541,8 +543,8 @@ export default class LesionForm extends Component {
                           }
                         })()
                       ) : (
-                          values.label = ligtypes[values.type]
-                        )
+                        values.label = ligtypes[values.type]
+                      )
                       }
 
 
@@ -720,7 +722,7 @@ export default class LesionForm extends Component {
                     Submit
                 </button>
 
-                  <Link to={{ pathname: `/GA/${currentexamID}`, state: { examID: currentexamID } }} className="nav-link">
+                  <Link to={{ pathname: `/GA/${currentexamID}`, state: { exam: currentexam, user:currentuser} }} className="nav-link">
                     <button>
                       Retour au GA
                     </button>

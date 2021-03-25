@@ -10,12 +10,20 @@ class ExamDataService {
         return http.get(`/exams/state/${state}`);
     }
 
+    findByValid(valid) {
+        return http.get(`/exams/valid/${valid}`);
+    }
+
     findByUser(userId) {
         return http.get(`/exams/user/${userId}`)
     }
 
-    findByUserAndState(userId, state){
-        return http.get(`/exams/userAndState/${userId}/${state}`)
+    findByUserAndState(userId, state, valid){
+        return http.get(`/exams/userAndState/${userId}/${state}/${valid}`)
+    }
+
+    findByUserAndValid(userId, valid){
+        return http.get(`/exams/userAndValid/${userId}/${valid}`)
     }
 
     findAll() {

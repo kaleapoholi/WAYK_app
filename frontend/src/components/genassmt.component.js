@@ -21,7 +21,8 @@ export default class GAForm extends Component {
 
 
     this.state = {
-      currentexamid: this.props.location.state.examID,
+      currentexam: this.props.location.state.exam,
+      currentuser: this.props.location.state.user,
       currentexamstate: "",
       retrieved: false,
       lesions: [],
@@ -36,7 +37,8 @@ export default class GAForm extends Component {
         state: false,
         laterality: "",
         effusion: "Inexistant",
-        examID: null,
+        examId: null,
+        userId: null
 
       }
 
@@ -44,14 +46,14 @@ export default class GAForm extends Component {
   }
 
   componentDidMount() {
-    console.log(this.state);
+    console.log("props", this.props.location.state.exam.user_exams.userId);
     this.retrieveGA();
     this.retrieveStateExam();
 
   }
 
   retrieveStateExam() {
-    ExamDataService.findOne(this.props.location.state.examID)
+    ExamDataService.findOne(this.props.location.state.exam.id)
       .then(response => {
         this.setState({
           currentexamstate: response.data.state
@@ -79,7 +81,7 @@ export default class GAForm extends Component {
   }
 
   retrieveGA() {
-    GADataService.findGAbyExamID(this.state.currentexamid)
+    GADataService.findGAbyExamUserID(this.props.location.state.exam.id, this.props.location.state.user.id)
       .then(response => {
         if (response.data[0] !== undefined) {
           this.setState({
@@ -101,7 +103,8 @@ export default class GAForm extends Component {
               state: response.data[0].state,
               laterality: response.data[0].laterality,
               effusion: response.data[0].effusion,
-              examID: response.data[0].examID
+              examId: response.data[0].examId,
+              userId: response.data[0].userId
             }
           });
           this.retrieveLesionByGAid(this.state.currentGA.id);
@@ -126,13 +129,14 @@ export default class GAForm extends Component {
       state: true,
       laterality: values.laterality,
       effusion: values.effusion,
-      examID: this.props.location.state.examID
+      examId: this.props.location.state.exam.id,
+      userId: this.props.location.state.user.id
     }
 
     console.log("saving GA");
     console.log(data);
 
-    GADataService.create(data, this.props.location.state.examID)
+    GADataService.create(data, this.props.location.state.exam.id, this.props.location.state.user.id )
       .then(response => {
         this.setState({
           id: response.data.id,
@@ -145,7 +149,8 @@ export default class GAForm extends Component {
           state: true,
           laterality: response.data.laterality,
           effusion: response.data.effusion,
-          examID: response.data.examID,
+          examId: response.data.examId,
+          userId: response.data.userId,
 
           submitted: true
 
@@ -160,7 +165,7 @@ export default class GAForm extends Component {
 
   render() {
 
-    const { retrieved, lesions, currentexamid, currentexamstate, currentGA } = this.state;
+    const { retrieved, lesions, currentexam, currentuser, currentexamstate, currentGA } = this.state;
 
     const Condition = ({ when, is, children }) => (
       <Field name={when} subscription={{ value: true }}>
@@ -177,6 +182,9 @@ export default class GAForm extends Component {
     return (
       <Styles>
         <div className="container">
+          <div>
+            <h3>{currentexam.dirname} par {currentuser.username}</h3>
+          </div>
 
           {retrieved === true ? (
             <div>
@@ -223,7 +231,7 @@ export default class GAForm extends Component {
                 {currentGA.bonestate}
                 {currentGA.bonestate !== "Normal" && currentexamstate !== "LU" && (
                   <div className="buttons">
-                    <Link to={{ pathname: `/addlesion/${currentGA.id}`, state: { currentGAinfo: { examID: currentexamid, gaID: currentGA.id, structure: "bonestate" } } }} className="nav-link">
+                    <Link to={{ pathname: `/addlesion/${currentGA.id}`, state: { currentGAinfo: { exam: currentexam, user: currentuser, gaID: currentGA.id, structure: "bonestate" } } }} className="nav-link">
                       <button>
                         Ajouter une lésion
                     </button>
@@ -240,7 +248,7 @@ export default class GAForm extends Component {
                 {currentGA.cartstate}
                 {currentGA.cartstate !== "Normal" && currentexamstate !== "LU" && (
                   <div className="buttons">
-                    <Link to={{ pathname: `/addlesion/${currentGA.id}`, state: { currentGAinfo: { examID: currentexamid, gaID: currentGA.id, structure: "cartstate" } } }} className="nav-link">
+                    <Link to={{ pathname: `/addlesion/${currentGA.id}`, state: { currentGAinfo: { exam: currentexam, user: currentuser,gaID: currentGA.id, structure: "cartstate" } } }} className="nav-link">
                       <button>
                         Ajouter une lésion
                     </button>
@@ -257,7 +265,7 @@ export default class GAForm extends Component {
                 {currentGA.menstate}
                 {currentGA.menstate !== "Normal" && currentexamstate !== "LU" && (
                   <div className="buttons">
-                    <Link to={{ pathname: `/addlesion/${currentGA.id}`, state: { currentGAinfo: { examID: currentexamid, gaID: currentGA.id, structure: "menstate" } } }} className="nav-link">
+                    <Link to={{ pathname: `/addlesion/${currentGA.id}`, state: { currentGAinfo: { exam: currentexam, user: currentuser,gaID: currentGA.id, structure: "menstate" } } }} className="nav-link">
                       <button>
                         Ajouter une lésion
                     </button>
@@ -274,7 +282,7 @@ export default class GAForm extends Component {
                 {currentGA.ligstate}
                 {currentGA.ligstate !== "Normal" && currentexamstate !== "LU" && (
                   <div className="buttons">
-                    <Link to={{ pathname: `/addlesion/${currentGA.id}`, state: { currentGAinfo: { examID: currentexamid, gaID: currentGA.id, structure: "ligstate" } } }} className="nav-link">
+                    <Link to={{ pathname: `/addlesion/${currentGA.id}`, state: { currentGAinfo: { exam: currentexam, user: currentuser,gaID: currentGA.id, structure: "ligstate" } } }} className="nav-link">
                       <button>
                         Ajouter une lésion
                     </button>

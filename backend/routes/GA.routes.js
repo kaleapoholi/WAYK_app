@@ -13,7 +13,7 @@ module.exports = app => {
     router.get("/GAexam/:examID", genasmt.findGAbyExamID);
 
     // Create a new GA
-    router.post("/:examID", genasmt.create);
+    router.post("/create/:examId/:userId", genasmt.create);
 
     // Retrieve all published GA
     router.get("/published", genasmt.findAllPublished);
@@ -38,6 +38,9 @@ module.exports = app => {
 
     // Retrieve a single GA with id
     router.get("/id/:id", genasmt.findOne);
+
+    // Retrieve a GA with examId and userId
+    router.get("/ExamUserId/:examId/:userId", genasmt.findGAbyExamUserId);
 
     // Update a GA with id
     router.put("/id/:id", genasmt.update);
