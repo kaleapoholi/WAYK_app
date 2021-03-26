@@ -120,14 +120,13 @@ export default class LesionForm extends Component {
     )
 
     const onSubmit = values => {
-      window.alert(JSON.stringify(values, 0, 2));
+      window.alert(JSON.stringify({"message" : "Lésion enregistrée.", "instruction": "Saisir une autre lésion ou Retour au GA pour saisir une autre articulation"}, 0, 2));
       this.saveLesion(values);
-
     }
 
 
 
-    const bonetypes = { "Fissure": "OS_FIS", "Fracture": "OS_FRA", "Contusion/ Œdème": "OS_CON", "Tumeur": "OS_TUM", "Nécrose": "OS_NEC", "Dysplasie": "OS_DYS" };
+    const bonetypes = { "Fissure": "OS_FIS", "Fracture": "OS_FRA", "Contusion/ Œdème": "OS_CON", "Tumeur": "OS_TUM", "Nécrose": "OS_NEC", "Dysplasie": "OS_DYS", "Kyste" : "OS_KYS" };
     const bonecartlocalisation = ["Tibia", "Fémur", "Patella", "Fibula"]
     const tibiaregion = ["Plateau", "Massif Epine Tibiale"];
     const tibiaposition = ["Insertion LCA", "Insertion LCP"];
@@ -158,7 +157,7 @@ export default class LesionForm extends Component {
     const menlocalisation = ["Médial", "Latéral"];
     const menregion = ["Racine", "Corps", "Corne"];
     const menposition = ["Antérieur", "Postérieur"];
-    const menlabel = { "Anse de seau": "ME_ANS", "Fragment Libre": "ME_FRA", "Languette": "ME_LAN", "Longitudinale": "ME_LON", "Radiaire": "ME_RAD" };
+    const menlabel = { "Anse de seau": "ME_ANS", "Fragment Libre": "ME_FRA", "Languette": "ME_LAN", "Longitudinale": "ME_LON", "Radiaire": "ME_RAD", "Horizontale": "ME_HOR"};
 
     return (
       <Styles>
@@ -718,9 +717,10 @@ export default class LesionForm extends Component {
 
                 <div className="buttons">
 
+                
                   <button type="submit" disabled={submitting}>
                     Submit
-                </button>
+                  </button>
 
                   <Link to={{ pathname: `/GA/${currentexamID}`, state: { exam: currentexam, user:currentuser} }} className="nav-link">
                     <button>
